@@ -34,7 +34,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'junit:junit:4.13.1'
 
-    runtimeOnly 'mysql:mysql-connector-java'
+	implementation 'org.modelmapper:modelmapper:2.4.2'
+
+	runtimeOnly 'mysql:mysql-connector-java'
 
 	annotationProcessor 'org.projectlombok:lombok'
 	compileOnly 'org.projectlombok:lombok'
