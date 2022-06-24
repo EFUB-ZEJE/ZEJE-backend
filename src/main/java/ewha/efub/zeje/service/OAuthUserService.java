@@ -49,9 +49,10 @@ public class OAuthUserService implements OAuth2UserService<OAuth2UserRequest, OA
             System.out.println("로그인 유저: " + user.getNickname() + ", " + user.getEmail());
             return user;
         } else{
+            userRepository.save(attributes.toEntity(registrationId));
             User loginUser = userRepository.findByEmail(attributes.getEmail());
             System.out.println("로그인 유저: " + loginUser.getNickname() + ", " + loginUser.getEmail());
-            return userRepository.save(attributes.toEntity(registrationId));
+            return loginUser;
         }
 
     }
