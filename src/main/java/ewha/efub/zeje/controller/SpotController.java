@@ -1,20 +1,29 @@
 package ewha.efub.zeje.controller;
 
+import ewha.efub.zeje.domain.SpotRepository;
 import ewha.efub.zeje.dto.SpotDTO;
 import ewha.efub.zeje.service.SpotService;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONArray;
+import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.security.core.parameters.P;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.Map;
+
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value="/spots")
 public class SpotController {
-
+    private final SpotRepository spotRepository;
     private final SpotService spotService;
 
     @GetMapping(value="/search/travel/{keyword}")
@@ -25,5 +34,46 @@ public class SpotController {
     @GetMapping(value="/search/experience/{keyword}")
     public List<SpotDTO> searchExperienceSpots(@PathVariable("keyword") String keyword){
         return spotService.searchSpots("체험", keyword);
+    }
+
+    @PostMapping("/jsonapi")
+    public String callApiWithJson(@RequestBody Map<String,String> body) {
+        String cat1 = body.get("cat1");
+        String cat2 = body.get("cat2");
+        String cat3 = body.get("cat3");
+
+        JSONObject jsonObject = spotService.callApiWithJson(cat1, cat2, cat3);
+        //JSONArray jsonArray = jsonObject.getJSONArray();
+        JSONParser jsonParser = new JSONParser();
+        JSONObject parseResponse = (JSONObject) jsonObject.get("response");
+        JSONObject parseBody = (JSONObject) parseResponse.get("body");
+        JSONObject parseItems = (JSONObject) parseBody.get("items");
+
+        JSONArray parseItemList = (JSONArray) parseItems.get("item");
+
+        for(int i=0;i<parseItemList.size();i++) {
+            JSONObject item = (JSONObject) parseItemList.get(i);
+            Long contentId = Long.parseLong((String) item.get("contentid"));
+            String category = SpotType.valueOf((String) item.get("cat1")).getName();
+            String name = (String) item.get("title");
+            String location = (String) item.get("addr1");
+
+            return contentId + category + name + location;
+        }
+
+        return "end";
+    }
+}
+
+enum SpotType {
+    A01("여행,자연"),
+    A02("체험");
+
+    final private String name;
+    public String getName(){
+        return name;
+    }
+    private SpotType(String name) {
+        this.name = name;
     }
 }
