@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<script language="javascript" type="text/javascript">
+    var output;
+
+    function init() {
+        output = document.getElementById("output");
+        console.log("init");
+        getCurrentUser();
+    }
+
+    function getCurrentUser() {
+        console.log("현재 로그인된 유저 찾기 시작")
+        fetch('http://localhost:8080/api/users/currentUser')
+            .then(res => res.text())
+            .then(res => {
+                writeToScreen("현재 유저: " + res)
+            })
+
+
+
+    }
+
+    function writeToScreen(message) {
+        var pre = document.createElement("p");
+        pre.style.wordWrap = "break-word";
+        pre.innerHTML = message;
+        output.appendChild(pre);
+    }
+
+    window.addEventListener("load", init, false);
+</script>
+
+<body>
+<h2>로그인 이후 페이지</h2>
+<div id="output"></div>
+</body>
+</html>
