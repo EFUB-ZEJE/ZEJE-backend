@@ -1,8 +1,11 @@
 package ewha.efub.zeje.service;
 
+import ewha.efub.zeje.domain.Spot;
 import ewha.efub.zeje.domain.SpotRepository;
+import ewha.efub.zeje.domain.SpotType;
 import ewha.efub.zeje.dto.SpotDTO;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONArray;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +15,6 @@ import java.util.stream.Collectors;
 import org.json.JSONObject;
 import org.json.XML;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -37,9 +38,9 @@ public class SpotService {
     @Value("${api.serviceKey}")
     private String serviceKey;
 
-    public JSONObject callApiWithJson(String cat1, String cat2, String cat3) {
+    public Integer addSpotApi(String cat1, String cat2, String cat3) {
         StringBuffer result = new StringBuffer();
-        //String jsonPrintString = null;
+
         JSONObject jsonObject = null;
         try {
             String apiUrl = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey="+serviceKey
@@ -55,11 +56,33 @@ public class SpotService {
             }
 
             jsonObject = XML.toJSONObject(result.toString());
-            //jsonPrintString = jsonObject.toString();
+
+            JSONObject parseResponse = (JSONObject) jsonObject.get("response");
+            JSONObject parseBody = (JSONObject) parseResponse.get("body");
+            JSONObject parseItems = (JSONObject) parseBody.get("items");
+            JSONArray parseItemList = (JSONArray) parseItems.get("item");
+
+            for(int i=0;i<parseItemList.length();i++) {
+                JSONObject item = (JSONObject) parseItemList.get(i);
+                Long contentId = Long.parseLong(String.valueOf(item.get("contentid")));
+                String category = SpotType.valueOf((String) item.get("cat1")).getName();
+                String name = (String) item.get("title");
+                String location = (String) item.get("addr1");
+
+                Spot spot = new Spot(contentId, category, name, location);
+                spotRepository.save(spot);
+            }
+
+            Integer count = parseItemList.length();
+            return count;
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return jsonObject;
+        return -1;
     }
 }
+
+
+
