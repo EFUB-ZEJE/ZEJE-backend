@@ -38,12 +38,12 @@ public class Spot {
     private String link;
 
     @Builder
-    public Spot(Long contentId, String category, String name, String location, String description, String link) {
+    public Spot(Long contentId, String category, String name, String location) {
         this.contentId = contentId;
         this.category = category;
         this.name = name;
         this.location = location;
-        this.description = description;
-        this.link = link;
     }
 }
+
+
