@@ -4,7 +4,7 @@ import ewha.efub.zeje.domain.SpotRepository;
 import ewha.efub.zeje.dto.SpotDTO;
 import ewha.efub.zeje.service.SpotService;
 import lombok.RequiredArgsConstructor;
-import org.json.simple.JSONArray;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,38 +42,10 @@ public class SpotController {
         String cat2 = body.get("cat2");
         String cat3 = body.get("cat3");
 
-        JSONObject jsonObject = spotService.callApiWithJson(cat1, cat2, cat3);
-        //JSONArray jsonArray = jsonObject.getJSONArray();
-        JSONParser jsonParser = new JSONParser();
-        JSONObject parseResponse = (JSONObject) jsonObject.get("response");
-        JSONObject parseBody = (JSONObject) parseResponse.get("body");
-        JSONObject parseItems = (JSONObject) parseBody.get("items");
+        Integer count = spotService.addSpotApi(cat1, cat2, cat3);
+        String message = count==-1? "Failed" : count+" Saved";
 
-        JSONArray parseItemList = (JSONArray) parseItems.get("item");
-
-        for(int i=0;i<parseItemList.size();i++) {
-            JSONObject item = (JSONObject) parseItemList.get(i);
-            Long contentId = Long.parseLong((String) item.get("contentid"));
-            String category = SpotType.valueOf((String) item.get("cat1")).getName();
-            String name = (String) item.get("title");
-            String location = (String) item.get("addr1");
-
-            return contentId + category + name + location;
-        }
-
-        return "end";
+        return message;
     }
 }
 
-enum SpotType {
-    A01("여행,자연"),
-    A02("체험");
-
-    final private String name;
-    public String getName(){
-        return name;
-    }
-    private SpotType(String name) {
-        this.name = name;
-    }
-}

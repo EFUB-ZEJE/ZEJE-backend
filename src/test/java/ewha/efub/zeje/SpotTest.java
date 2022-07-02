@@ -33,10 +33,8 @@ public class SpotTest {
         category = "여행";
         name = "최고 맛집";
         location = "제주시 어디어디구";
-        description = "제주도 현존 최고 맛집";
-        link = "www.jeju.com";
 
-        spot = new Spot(contentId, category, name, location, description, link);
+        spot = new Spot(contentId, category, name, location);
         assertThat(spotRepository.save(spot));
     }
 
