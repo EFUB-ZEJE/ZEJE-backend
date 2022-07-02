@@ -45,4 +45,16 @@ public class User extends TimeEntity{
         this.deleteFlag = false;
     }
 
+    public void deleteUser() {
+        this.deleteFlag = true;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateProfile(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
+
 }

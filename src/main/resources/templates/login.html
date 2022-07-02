@@ -16,7 +16,7 @@
 
     function getCurrentUser() {
         console.log("현재 로그인된 유저 찾기 시작")
-        fetch('http://localhost:8080/api/users/currentUser')
+        fetch('http://localhost:8080/api/users/userCurrent')
             .then(res => res.text())
             .then(res => {
                 writeToScreen("현재 유저: " + res)
