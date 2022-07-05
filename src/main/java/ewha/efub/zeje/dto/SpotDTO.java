@@ -29,12 +29,14 @@ public class SpotDTO {
     private String link;
 
     @Builder
-    public SpotDTO(Long contentId, String category, String type, String name, String location) {
+    public SpotDTO(Long contentId, String category, String type, String name, String location, String description, String link) {
         this.contentId = contentId;
         this.category = category;
         this.type = type;
         this.name = name;
         this.location = location;
+        this.description = description;
+        this.link = link;
     }
 
     public Spot toEntity() {
@@ -44,6 +46,8 @@ public class SpotDTO {
                 .type(type)
                 .name(name)
                 .location(location)
+                .description(description)
+                .link(link)
                 .build();
     }
 }

@@ -35,8 +35,10 @@ public class SpotTest {
         type = "힐링";
         name = "최고 맛집";
         location = "제주시 어디어디구";
+        description = "설명";
+        link = "http";
 
-        spot = new Spot(contentId, category, type, name, location);
+        spot = new Spot(contentId, category, type, name, location, description, link);
         assertThat(spotRepository.save(spot));
     }
 

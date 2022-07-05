@@ -6,6 +6,7 @@ import ewha.efub.zeje.domain.SpotType;
 import ewha.efub.zeje.dto.SpotDTO;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
+import org.json.simple.parser.JSONParser;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -42,11 +43,10 @@ public class SpotService {
 
         String type = selectType(cat1, cat2, cat3);
 
-        JSONObject jsonObject = changeXmlToJson(cat1, cat2, cat3);
+        String listApiUrl = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=" + serviceKey
+                + "&contentTypeId=12&areaCode=39&sigunguCode=&cat1=" + cat1 + "&cat2=" + cat2 + "&cat3=" + cat3 + "&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=263&pageNo=1";
 
-        JSONObject parseResponse = (JSONObject) jsonObject.get("response");
-        JSONObject parseBody = (JSONObject) parseResponse.get("body");
-        JSONObject parseItems = (JSONObject) parseBody.get("items");
+        JSONObject parseItems = readTourApi(listApiUrl);
         JSONArray parseItemList = (JSONArray) parseItems.get("item");
 
         int notSaved = 0;
@@ -63,7 +63,15 @@ public class SpotService {
             String name = (String) item.get("title");
             String location = (String) item.get("addr1");
 
-            SpotDTO spotDTO = new SpotDTO(contentId, category, type, name, location);
+            String detailApiUrl = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailCommon?ServiceKey="+ serviceKey + "&contentTypeId=12&contentId="+ contentId
+                    + "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&defaultYN=Y&firstImageYN=Y&areacodeYN=Y&catcodeYN=Y&addrinfoYN=Y&mapinfoYN=Y&overviewYN=Y&transGuideYN=Y";
+            JSONObject parseDetailItems = readTourApi(detailApiUrl);
+            JSONObject parseDetailItem = (JSONObject) parseDetailItems.get("item");
+
+            String description = parseDetailItem.has("overview")?(String) parseDetailItem.get("overview") : null;
+            String link = parseDetailItem.has("homepage")? (String) parseDetailItem.get("homepage") : null;
+
+            SpotDTO spotDTO = new SpotDTO(contentId, category, type, name, location, description, link);
             Spot spot = spotDTO.toEntity();
             spotRepository.save(spot);
         }
@@ -72,30 +80,33 @@ public class SpotService {
         return count;
     }
 
-    private JSONObject changeXmlToJson(String cat1, String cat2, String cat3) {
+
+    private JSONObject readTourApi(String apiUrl) {
         StringBuffer result = new StringBuffer();
 
-        JSONObject jsonObject = null;
+        JSONObject parseItems = null;
         try {
-            String apiUrl = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=" + serviceKey
-                    + "&contentTypeId=12&areaCode=39&sigunguCode=&cat1=" + cat1 + "&cat2=" + cat2 + "&cat3=" + cat3 + "&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=263&pageNo=1";
             URL url = new URL(apiUrl);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.connect();
             BufferedInputStream bufferedInputStream = new BufferedInputStream(urlConnection.getInputStream());
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(bufferedInputStream, "UTF-8"));
             String returnLine;
-            while ((returnLine = bufferedReader.readLine()) != null) {
+            while((returnLine = bufferedReader.readLine()) != null) {
                 result.append(returnLine);
             }
 
-            jsonObject = XML.toJSONObject(result.toString());
+            JSONObject jsonObject = XML.toJSONObject(result.toString());
+
+            JSONObject parseResponse = (JSONObject) jsonObject.get("response");
+            JSONObject parseBody = (JSONObject) parseResponse.get("body");
+            parseItems = (JSONObject) parseBody.get("items");
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return jsonObject;
+        return parseItems;
     }
 
     private String selectType(String cat1, String cat2, String cat3) {

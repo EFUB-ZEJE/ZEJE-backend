@@ -38,16 +38,18 @@ public class Spot {
     @Column
     private String description;
 
-    @Column
+    @Column(length = 500)
     private String link;
 
     @Builder
-    public Spot(Long contentId, String category, String type, String name, String location) {
+    public Spot(Long contentId, String category, String type, String name, String location, String description, String link) {
         this.contentId = contentId;
         this.category = category;
         this.type = type;
         this.name = name;
         this.location = location;
+        this.description = description;
+        this.link = link;
     }
 }
 
