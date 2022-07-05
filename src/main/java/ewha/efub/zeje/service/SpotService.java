@@ -39,48 +39,84 @@ public class SpotService {
     private String serviceKey;
 
     public Integer addSpotApi(String cat1, String cat2, String cat3) {
+
+        String type = selectType(cat1, cat2, cat3);
+
+        JSONObject jsonObject = changeXmlToJson(cat1, cat2, cat3);
+
+        JSONObject parseResponse = (JSONObject) jsonObject.get("response");
+        JSONObject parseBody = (JSONObject) parseResponse.get("body");
+        JSONObject parseItems = (JSONObject) parseBody.get("items");
+        JSONArray parseItemList = (JSONArray) parseItems.get("item");
+
+        int notSaved = 0;
+        for(int i=0;i<parseItemList.length();i++) {
+            JSONObject item = (JSONObject) parseItemList.get(i);
+
+            Long contentId = Long.parseLong(String.valueOf(item.get("contentid")));
+            if(spotRepository.findByContentId(contentId).isPresent()) {
+                notSaved++;
+                continue;
+            }
+
+            String category = cat2.equals("A0203")? "체험" : "여행";
+            String name = (String) item.get("title");
+            String location = (String) item.get("addr1");
+
+            SpotDTO spotDTO = new SpotDTO(contentId, category, type, name, location);
+            Spot spot = spotDTO.toEntity();
+            spotRepository.save(spot);
+        }
+
+        Integer count = parseItemList.length() - notSaved;
+        return count;
+    }
+
+    private JSONObject changeXmlToJson(String cat1, String cat2, String cat3) {
         StringBuffer result = new StringBuffer();
 
         JSONObject jsonObject = null;
         try {
-            String apiUrl = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey="+serviceKey
-                    + "&contentTypeId=12&areaCode=39&sigunguCode=&cat1="+cat1+"&cat2="+cat2+"&cat3="+cat3+"&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=263&pageNo=1";
+            String apiUrl = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=" + serviceKey
+                    + "&contentTypeId=12&areaCode=39&sigunguCode=&cat1=" + cat1 + "&cat2=" + cat2 + "&cat3=" + cat3 + "&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=263&pageNo=1";
             URL url = new URL(apiUrl);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.connect();
             BufferedInputStream bufferedInputStream = new BufferedInputStream(urlConnection.getInputStream());
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(bufferedInputStream, "UTF-8"));
             String returnLine;
-            while((returnLine = bufferedReader.readLine()) != null) {
+            while ((returnLine = bufferedReader.readLine()) != null) {
                 result.append(returnLine);
             }
 
             jsonObject = XML.toJSONObject(result.toString());
 
-            JSONObject parseResponse = (JSONObject) jsonObject.get("response");
-            JSONObject parseBody = (JSONObject) parseResponse.get("body");
-            JSONObject parseItems = (JSONObject) parseBody.get("items");
-            JSONArray parseItemList = (JSONArray) parseItems.get("item");
-
-            for(int i=0;i<parseItemList.length();i++) {
-                JSONObject item = (JSONObject) parseItemList.get(i);
-                Long contentId = Long.parseLong(String.valueOf(item.get("contentid")));
-                String category = SpotType.valueOf((String) item.get("cat1")).getName();
-                String name = (String) item.get("title");
-                String location = (String) item.get("addr1");
-
-                Spot spot = new Spot(contentId, category, name, location);
-                spotRepository.save(spot);
-            }
-
-            Integer count = parseItemList.length();
-            return count;
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return -1;
+        return jsonObject;
+    }
+
+    private String selectType(String cat1, String cat2, String cat3) {
+        StringBuilder typeBuilder = new StringBuilder();
+        for(SpotType spotType : SpotType.values()) {
+            if(spotType.toString().equals(cat1)) {
+                typeBuilder.append(spotType.valueOf(cat1).getName()).append(",");
+            }
+            if(spotType.toString().equals(cat2)) {
+                typeBuilder.append(spotType.valueOf(cat2).getName()).append(",");
+            }
+            if(spotType.toString().equals(cat3)) {
+                typeBuilder.append(spotType.valueOf(cat3).getName()).append(",");
+            }
+        }
+
+        if(typeBuilder.length()!=0) {
+            typeBuilder.deleteCharAt(typeBuilder.length()-1);
+        }
+
+        return typeBuilder.toString();
     }
 }
 

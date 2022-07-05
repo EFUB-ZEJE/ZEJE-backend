@@ -16,12 +16,16 @@ public class Spot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long spotId;
 
+    @NotNull
     @Column(name = "content_id")
     private Long contentId;
 
     @NotNull
     @Column(length = 45)
     private String category;
+
+    @Column(length = 50)
+    private String type;
 
     @NotNull
     @Column(length = 45)
@@ -38,9 +42,10 @@ public class Spot {
     private String link;
 
     @Builder
-    public Spot(Long contentId, String category, String name, String location) {
+    public Spot(Long contentId, String category, String type, String name, String location) {
         this.contentId = contentId;
         this.category = category;
+        this.type = type;
         this.name = name;
         this.location = location;
     }

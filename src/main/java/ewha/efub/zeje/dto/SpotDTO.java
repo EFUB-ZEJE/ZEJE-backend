@@ -1,6 +1,7 @@
 package ewha.efub.zeje.dto;
 
 import com.sun.istack.NotNull;
+import ewha.efub.zeje.domain.Spot;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class SpotDTO {
     private Long contentId;
     @NotNull
     private String category;
+    private String type;
     @NotNull
     private String name;
     @NotNull
@@ -26,4 +28,22 @@ public class SpotDTO {
     private String description;
     private String link;
 
+    @Builder
+    public SpotDTO(Long contentId, String category, String type, String name, String location) {
+        this.contentId = contentId;
+        this.category = category;
+        this.type = type;
+        this.name = name;
+        this.location = location;
+    }
+
+    public Spot toEntity() {
+        return Spot.builder()
+                .contentId(contentId)
+                .category(category)
+                .type(type)
+                .name(name)
+                .location(location)
+                .build();
+    }
 }
