@@ -36,16 +36,18 @@ public class SpotController {
         return spotService.searchSpots("체험", keyword);
     }
 
-    @PostMapping("/jsonapi")
-    public String callApiWithJson(@RequestBody Map<String,String> body) {
+    @PostMapping("/tourapi")
+    public String insertSpotApiData(@RequestBody Map<String, String> body) {
         String cat1 = body.get("cat1");
         String cat2 = body.get("cat2");
         String cat3 = body.get("cat3");
 
         Integer count = spotService.addSpotApi(cat1, cat2, cat3);
-        String message = count==-1? "Failed" : count+" Saved";
+        String message = count + " Saved";
 
         return message;
     }
+
+
 }
 

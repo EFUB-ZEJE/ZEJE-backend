@@ -6,6 +6,7 @@ import ewha.efub.zeje.domain.SpotType;
 import ewha.efub.zeje.dto.SpotDTO;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
+import org.json.simple.parser.JSONParser;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -39,12 +40,52 @@ public class SpotService {
     private String serviceKey;
 
     public Integer addSpotApi(String cat1, String cat2, String cat3) {
+
+        String type = selectType(cat1, cat2, cat3);
+
+        String listApiUrl = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=" + serviceKey
+                + "&contentTypeId=12&areaCode=39&sigunguCode=&cat1=" + cat1 + "&cat2=" + cat2 + "&cat3=" + cat3 + "&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=263&pageNo=1";
+
+        JSONObject parseItems = readTourApi(listApiUrl);
+        JSONArray parseItemList = (JSONArray) parseItems.get("item");
+
+        int notSaved = 0;
+        for(int i=0;i<parseItemList.length();i++) {
+            JSONObject item = (JSONObject) parseItemList.get(i);
+
+            Long contentId = Long.parseLong(String.valueOf(item.get("contentid")));
+            if(spotRepository.findByContentId(contentId).isPresent()) {
+                notSaved++;
+                continue;
+            }
+
+            String category = cat2.equals("A0203")? "체험" : "여행";
+            String name = (String) item.get("title");
+            String location = (String) item.get("addr1");
+
+            String detailApiUrl = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailCommon?ServiceKey="+ serviceKey + "&contentTypeId=12&contentId="+ contentId
+                    + "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&defaultYN=Y&firstImageYN=Y&areacodeYN=Y&catcodeYN=Y&addrinfoYN=Y&mapinfoYN=Y&overviewYN=Y&transGuideYN=Y";
+            JSONObject parseDetailItems = readTourApi(detailApiUrl);
+            JSONObject parseDetailItem = (JSONObject) parseDetailItems.get("item");
+
+            String description = parseDetailItem.has("overview")?(String) parseDetailItem.get("overview") : null;
+            String link = parseDetailItem.has("homepage")? (String) parseDetailItem.get("homepage") : null;
+
+            SpotDTO spotDTO = new SpotDTO(contentId, category, type, name, location, description, link);
+            Spot spot = spotDTO.toEntity();
+            spotRepository.save(spot);
+        }
+
+        Integer count = parseItemList.length() - notSaved;
+        return count;
+    }
+
+
+    private JSONObject readTourApi(String apiUrl) {
         StringBuffer result = new StringBuffer();
 
-        JSONObject jsonObject = null;
+        JSONObject parseItems = null;
         try {
-            String apiUrl = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey="+serviceKey
-                    + "&contentTypeId=12&areaCode=39&sigunguCode=&cat1="+cat1+"&cat2="+cat2+"&cat3="+cat3+"&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=263&pageNo=1";
             URL url = new URL(apiUrl);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.connect();
@@ -55,32 +96,38 @@ public class SpotService {
                 result.append(returnLine);
             }
 
-            jsonObject = XML.toJSONObject(result.toString());
+            JSONObject jsonObject = XML.toJSONObject(result.toString());
 
             JSONObject parseResponse = (JSONObject) jsonObject.get("response");
             JSONObject parseBody = (JSONObject) parseResponse.get("body");
-            JSONObject parseItems = (JSONObject) parseBody.get("items");
-            JSONArray parseItemList = (JSONArray) parseItems.get("item");
-
-            for(int i=0;i<parseItemList.length();i++) {
-                JSONObject item = (JSONObject) parseItemList.get(i);
-                Long contentId = Long.parseLong(String.valueOf(item.get("contentid")));
-                String category = SpotType.valueOf((String) item.get("cat1")).getName();
-                String name = (String) item.get("title");
-                String location = (String) item.get("addr1");
-
-                Spot spot = new Spot(contentId, category, name, location);
-                spotRepository.save(spot);
-            }
-
-            Integer count = parseItemList.length();
-            return count;
+            parseItems = (JSONObject) parseBody.get("items");
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return -1;
+        return parseItems;
+    }
+
+    private String selectType(String cat1, String cat2, String cat3) {
+        StringBuilder typeBuilder = new StringBuilder();
+        for(SpotType spotType : SpotType.values()) {
+            if(spotType.toString().equals(cat1)) {
+                typeBuilder.append(spotType.valueOf(cat1).getName()).append(",");
+            }
+            if(spotType.toString().equals(cat2)) {
+                typeBuilder.append(spotType.valueOf(cat2).getName()).append(",");
+            }
+            if(spotType.toString().equals(cat3)) {
+                typeBuilder.append(spotType.valueOf(cat3).getName()).append(",");
+            }
+        }
+
+        if(typeBuilder.length()!=0) {
+            typeBuilder.deleteCharAt(typeBuilder.length()-1);
+        }
+
+        return typeBuilder.toString();
     }
 }
 
