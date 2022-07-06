@@ -21,6 +21,7 @@ public class SpotTest {
 
     Long contentId;
     String category;
+    String type;
     String name;
     String location;
     String description;
@@ -31,12 +32,13 @@ public class SpotTest {
     public void 컬럼_정상입력_테스트() {
         contentId = (long)123;
         category = "여행";
+        type = "힐링";
         name = "최고 맛집";
         location = "제주시 어디어디구";
-        description = "제주도 현존 최고 맛집";
-        link = "www.jeju.com";
+        description = "설명";
+        link = "http";
 
-        spot = new Spot(contentId, category, name, location, description, link);
+        spot = new Spot(contentId, category, type, name, location, description, link);
         assertThat(spotRepository.save(spot));
     }
 
