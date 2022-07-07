@@ -46,6 +46,10 @@ public class SpotController {
         return spotService.findSpotsByKeyword("체험", keyword);
     }
 
+    @GetMapping(value="/details/{spotId}")
+    public SpotDTO findSpotDetails(@PathVariable("spotId") Long spotId){
+        return spotService.findSpotDetail(spotId);
+    }
 
     @PostMapping("/tourapi")
     public String insertSpotApiData(@RequestBody Map<String, String> body) {

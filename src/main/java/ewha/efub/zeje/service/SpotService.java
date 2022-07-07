@@ -55,6 +55,13 @@ public class SpotService {
                 .collect(Collectors.toList());
     }
 
+    public SpotDTO findSpotDetail(Long spotId){
+        Optional<Spot> spotWrapper = spotRepository.findById(spotId);
+        Spot spot = spotWrapper.get();
+        SpotDTO spotDTO = modelMapper.map(spot, SpotDTO.class);
+
+        return spotDTO;
+    }
 
     @Value("${api.serviceKey}")
     private String serviceKey;
