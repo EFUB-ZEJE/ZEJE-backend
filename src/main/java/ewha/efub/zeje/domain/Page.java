@@ -16,34 +16,35 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class Diary {
+public class Page {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long diaryId;
+    private Long pageId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "diary_id")
+    private Diary diary;
 
     @Column
     @NotNull
-    private String name;
+    private String title;
 
     @Column
-    private String description;
+    @NotNull
+    private String content;
+
+    @Column
+    private String image;
 
     @NotNull
     @CreatedDate
-    private LocalDateTime createdDate;
-
-    @NotNull
-    @LastModifiedDate
-    private LocalDateTime updatedDate;
+    private LocalDateTime createDate;
 
     @Builder
-    public Diary(User user, String name, String description) {
-        this.user = user;
-        this.name = name;
-        this.description = description;
+    Page(Diary diary, String title, String content, String image){
+        this.diary = diary;
+        this.title = title;
+        this.content = content;
+        this.image = image;
     }
 }
