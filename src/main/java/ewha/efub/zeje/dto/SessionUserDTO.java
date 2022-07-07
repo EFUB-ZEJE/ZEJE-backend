@@ -8,11 +8,13 @@ import java.io.Serializable;
 
 @Getter
 public class SessionUserDTO implements Serializable {
+    private Long userId;
     private String nickname;
     private String email;
     private String profileUrl;
 
     public SessionUserDTO(User user) {
+        this.userId = user.getUserId();
         this.nickname = user.getNickname();
         this.email = user.getEmail();
         this.profileUrl = user.getProfileUrl();
