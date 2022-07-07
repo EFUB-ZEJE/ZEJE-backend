@@ -14,9 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor
-@MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
-public class Page {
+public class Page extends TimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pageId;
@@ -35,10 +33,6 @@ public class Page {
 
     @Column
     private String image;
-
-    @NotNull
-    @CreatedDate
-    private LocalDateTime createDate;
 
     @Builder
     Page(Diary diary, String title, String content, String image){

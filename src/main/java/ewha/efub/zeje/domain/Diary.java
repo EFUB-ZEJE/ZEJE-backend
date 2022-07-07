@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class Diary {
+public class Diary extends TimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long diaryId;
@@ -31,10 +31,6 @@ public class Diary {
 
     @Column
     private String description;
-
-    @NotNull
-    @CreatedDate
-    private LocalDateTime createdDate;
 
     @NotNull
     @LastModifiedDate
