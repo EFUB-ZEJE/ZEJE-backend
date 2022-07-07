@@ -8,6 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface SpotRepository extends JpaRepository<Spot, Long> {
-    List<Spot> findByCategoryStartingWithAndNameContaining(String category, String name);
+    List<Spot> findByCategory(String category);
+    List<Spot> findByCategoryAndNameContaining(String category, String name);
     Optional<Spot> findByContentId(Long contentId);
 }

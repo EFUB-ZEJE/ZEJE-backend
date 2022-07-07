@@ -26,15 +26,26 @@ public class SpotController {
     private final SpotRepository spotRepository;
     private final SpotService spotService;
 
+    @GetMapping(value="/search/travel")
+    public List<SpotDTO> findAllTravelSpotList(){
+        return spotService.findAllSpots("여행");
+    }
+
+    @GetMapping(value="/search/experience")
+    public List<SpotDTO> findAllExperienceSpotList(){
+        return spotService.findAllSpots("체험");
+    }
+
     @GetMapping(value="/search/travel/{keyword}")
-    public List<SpotDTO> searchTravelSpots(@PathVariable("keyword") String keyword){
-        return spotService.searchSpots("여행", keyword);
+    public List<SpotDTO> searchTravelSpotList(@PathVariable("keyword") String keyword){
+        return spotService.findSpotsByKeyword("여행", keyword);
     }
 
     @GetMapping(value="/search/experience/{keyword}")
-    public List<SpotDTO> searchExperienceSpots(@PathVariable("keyword") String keyword){
-        return spotService.searchSpots("체험", keyword);
+    public List<SpotDTO> searchExperienceSpotList(@PathVariable("keyword") String keyword){
+        return spotService.findSpotsByKeyword("체험", keyword);
     }
+
 
     @PostMapping("/tourapi")
     public String insertSpotApiData(@RequestBody Map<String, String> body) {
