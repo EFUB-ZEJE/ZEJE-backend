@@ -27,27 +27,27 @@ public class SpotController {
     private final SpotService spotService;
 
     @GetMapping(value="/search/travel")
-    public List<SpotDTO> findAllTravelSpotList(){
+    public List<SpotDTO> spotTravelList(){
         return spotService.findAllSpots("여행");
     }
 
     @GetMapping(value="/search/experience")
-    public List<SpotDTO> findAllExperienceSpotList(){
+    public List<SpotDTO> spotExperienceList(){
         return spotService.findAllSpots("체험");
     }
 
     @GetMapping(value="/search/travel/{keyword}")
-    public List<SpotDTO> searchTravelSpotList(@PathVariable("keyword") String keyword){
+    public List<SpotDTO> spotSearchTravelList(@PathVariable("keyword") String keyword){
         return spotService.findSpotsByKeyword("여행", keyword);
     }
 
     @GetMapping(value="/search/experience/{keyword}")
-    public List<SpotDTO> searchExperienceSpotList(@PathVariable("keyword") String keyword){
+    public List<SpotDTO> spotSearchExperienceList(@PathVariable("keyword") String keyword){
         return spotService.findSpotsByKeyword("체험", keyword);
     }
 
     @GetMapping(value="/details/{spotId}")
-    public SpotDTO findSpotDetails(@PathVariable("spotId") Long spotId){
+    public SpotDTO spotDetails(@PathVariable("spotId") Long spotId){
         return spotService.findSpotDetail(spotId);
     }
 
