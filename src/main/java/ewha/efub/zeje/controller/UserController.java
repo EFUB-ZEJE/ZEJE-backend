@@ -53,7 +53,7 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}/image")
-    public String updateProfileByNum(@PathVariable Long userId, @RequestParam("nickname") String nickname, @RequestParam("uploadFile") MultipartFile uploadFile) throws IOException {
+    public UserResponseDTO updateProfileByNum(@PathVariable Long userId, @RequestParam(value="nickname", required = false) String nickname, @RequestParam(value="uploadFile", required = false) MultipartFile uploadFile) throws IOException {
         return userService.updateProfile(userId, nickname, uploadFile);
     }
 }

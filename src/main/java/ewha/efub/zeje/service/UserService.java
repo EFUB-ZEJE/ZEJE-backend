@@ -36,7 +36,7 @@ public class UserService {
     }
 
     @Transactional
-    public String updateProfile(Long userId,  String nickname, MultipartFile file) throws IOException {
+    public UserResponseDTO updateProfile(Long userId,  String nickname, MultipartFile file) throws IOException {
         User entity = userRepository.findByUserIdAndDeleteFlagFalse(userId);
 
         if(file!=null) {
@@ -44,23 +44,21 @@ public class UserService {
             String newProfile = imageUploadService.uploadImage(currProfile, file);
 
             if(newProfile.equals("type error")) {
-                return "png나 jpeg 파일을 올려주세요";
+                return null;
             }
             else if(newProfile.equals("null error")) {
-                return "파일 오류";
+                return null;
             }
             else {
                 entity.updateProfile("http://" + imageUploadService.CLOUD_FRONT_DOMAIN_NAME + "/profile/" + newProfile);
-                return "성공";
             }
         }
 
-        if(nickname!=null || !nickname.isBlank()) {
-            entity.updateNickname(nickname);
-            return "성공";
+        if(nickname!=null) {
+            if(!nickname.isBlank()) entity.updateNickname(nickname);
         }
 
-        return "수정사항 없음";
+        return new UserResponseDTO(entity);
     }
 
 }
