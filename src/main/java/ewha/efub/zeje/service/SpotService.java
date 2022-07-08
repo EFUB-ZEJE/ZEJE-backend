@@ -8,9 +8,11 @@ import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.json.JSONObject;
@@ -28,12 +30,37 @@ import java.net.URL;
 public class SpotService {
     private final SpotRepository spotRepository;
     private final ModelMapper modelMapper = new ModelMapper();
+    private final ModelMapper modelMapperSearch = new ModelMapper();
 
-    public List<SpotDTO> searchSpots(String category, String keyword) {
-        return spotRepository.findByCategoryStartingWithAndNameContaining(category, keyword)
+    @Bean
+    public ModelMapper setSearchMapper() {
+        modelMapperSearch.typeMap(Spot.class, SpotDTO.class).addMappings(mapper -> {
+            mapper.skip(SpotDTO::setDescription);
+            mapper.skip(SpotDTO::setLink);
+        });
+        return modelMapperSearch;
+    }
+
+    public List<SpotDTO> findAllSpots(String category) {
+        return spotRepository.findByCategory(category)
                 .stream()
-                .map(spot -> modelMapper.map(spot, SpotDTO.class))
+                .map(spot -> modelMapperSearch.map(spot, SpotDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    public List<SpotDTO> findSpotsByKeyword(String category, String keyword) {
+        return spotRepository.findByCategoryAndNameContaining(category, keyword)
+                .stream()
+                .map(spot -> modelMapperSearch.map(spot, SpotDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    public SpotDTO findSpotDetail(Long spotId){
+        Optional<Spot> spotWrapper = spotRepository.findById(spotId);
+        Spot spot = spotWrapper.get();
+        SpotDTO spotDTO = modelMapper.map(spot, SpotDTO.class);
+
+        return spotDTO;
     }
 
     @Value("${api.serviceKey}")
