@@ -4,15 +4,11 @@ import ewha.efub.zeje.domain.SpotRepository;
 import ewha.efub.zeje.dto.SpotDTO;
 import ewha.efub.zeje.service.SpotService;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,7 +48,7 @@ public class SpotController {
     }
 
     @PostMapping("/tourapi")
-    public String insertSpotApiData(@RequestBody Map<String, String> body) {
+    public String spotApiData(@RequestBody Map<String, String> body) {
         String cat1 = body.get("cat1");
         String cat2 = body.get("cat2");
         String cat3 = body.get("cat3");
@@ -63,6 +59,9 @@ public class SpotController {
         return message;
     }
 
-
+    @GetMapping("/flowers")
+    public List<SpotDTO> spotFlowerList() {
+        return spotService.findFlowerSpot();
+    }
 }
 

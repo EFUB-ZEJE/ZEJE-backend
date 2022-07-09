@@ -39,6 +39,17 @@ public class SpotDTO {
         this.link = link;
     }
 
+    public SpotDTO(Spot spot) {
+        this.spotId = spot.getSpotId();
+        this.contentId = spot.getContentId();
+        this.category = spot.getCategory();
+        this.type = spot.getType();
+        this.name = spot.getName();
+        this.location = spot.getLocation();
+        this.description = spot.getDescription();
+        this.link = spot.getLink();
+    }
+
     public Spot toEntity() {
         return Spot.builder()
                 .contentId(contentId)
