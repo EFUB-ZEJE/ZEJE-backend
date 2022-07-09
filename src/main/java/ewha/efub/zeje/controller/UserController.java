@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
@@ -51,4 +52,8 @@ public class UserController {
         }
     }
 
+    @PatchMapping("/{userId}/image")
+    public UserResponseDTO updateProfileByNum(@PathVariable Long userId, @RequestParam(value="nickname", required = false) String nickname, @RequestParam(value="uploadFile", required = false) MultipartFile uploadFile) throws IOException {
+        return userService.updateProfile(userId, nickname, uploadFile);
+    }
 }

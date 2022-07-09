@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final ImageUploadService imageUploadService;
 
     @Transactional
     public UserResponseDTO findUser(Long userId) {
@@ -32,4 +34,31 @@ public class UserService {
             return false;
         }
     }
+
+    @Transactional
+    public UserResponseDTO updateProfile(Long userId,  String nickname, MultipartFile file) throws IOException {
+        User entity = userRepository.findByUserIdAndDeleteFlagFalse(userId);
+
+        if(file!=null) {
+            String currProfile = entity.getProfileUrl();
+            String newProfile = imageUploadService.uploadImage(currProfile, file);
+
+            if(newProfile.equals("type error")) {
+                return null;
+            }
+            else if(newProfile.equals("null error")) {
+                return null;
+            }
+            else {
+                entity.updateProfile("http://" + imageUploadService.CLOUD_FRONT_DOMAIN_NAME + "/profile/" + newProfile);
+            }
+        }
+
+        if(nickname!=null) {
+            if(!nickname.isBlank()) entity.updateNickname(nickname);
+        }
+
+        return new UserResponseDTO(entity);
+    }
+
 }
