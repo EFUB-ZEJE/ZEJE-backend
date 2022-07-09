@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+import java.util.List;
+
 import static ewha.efub.zeje.dto.DonationResponseDTO.*;
 
 @Service
@@ -21,20 +23,27 @@ public class DonationService {
     private final UserRepository userRepository;
 
     @Transactional
-    public DonationResponseDTO addDonation(Long userId, DonationRequestDTO donationRequestDTO) {
-        User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
-        Donation donation = Donation.builder()
-                                    .fruit(donationRequestDTO.getFruit())
-                                    .user(user)
-                                    .build();
-
+    public DonationResponseDTO addDonation(Donation donation) {
         donationRepository.save(donation);
         return new DonationResponseDTO(donation);
     }
 
     @Transactional
     public DonationTotalResponseDTO findDonations(Long userId) {
-        User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
+        Integer fruitTotal = 0;
+        List<Donation> donations = donationRepository.findDonationsByUser_UserId(userId);
+        for(Donation donation : donations) {
+            fruitTotal += donation.getFruit();
+        }
+        return new DonationTotalResponseDTO(userId, fruitTotal);
+    }
 
+    public Donation buildDonation(Long userId, DonationRequestDTO donationRequestDTO) {
+        User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
+        Donation donation = Donation.builder()
+                .fruit(donationRequestDTO.getFruit())
+                .user(user)
+                .build();
+        return donation;
     }
 }
