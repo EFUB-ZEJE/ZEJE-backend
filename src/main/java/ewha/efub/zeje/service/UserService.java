@@ -33,9 +33,16 @@ public class UserService {
     }
 
     @Transactional
-    public UserFruitResponseDTO modifyFruitBox(Long userId, FruitRequestDTO fruitRequestDTO) {
+    public UserFruitResponseDTO modifyFruitBoxAdd(Long userId, FruitRequestDTO fruitRequestDTO) {
         User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
-        user.updateFruitBox(fruitRequestDTO.getFruitBox());
+        user.updateFruitBox(true, fruitRequestDTO.getFruitBox());
+        return new UserFruitResponseDTO(user);
+    }
+
+    @Transactional
+    public UserFruitResponseDTO modifyFruitBoxSub(Long userId, FruitRequestDTO fruitRequestDTO) {
+        User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
+        user.updateFruitBox(false, fruitRequestDTO.getFruitBox());
         return new UserFruitResponseDTO(user);
     }
 

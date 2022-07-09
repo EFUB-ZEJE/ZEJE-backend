@@ -67,6 +67,6 @@ public class UserController {
 
     @PostMapping("/{userId}/fruitBox")
     public UserFruitResponseDTO fruitModify(@PathVariable Long userId, @RequestBody FruitRequestDTO fruitRequestDTO) {
-        return userService.modifyFruitBox(userId, fruitRequestDTO);
+        return userService.modifyFruitBoxAdd(userId, fruitRequestDTO);
     }
 }

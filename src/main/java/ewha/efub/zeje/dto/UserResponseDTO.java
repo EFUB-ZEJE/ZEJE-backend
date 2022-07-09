@@ -19,6 +19,7 @@ public class UserResponseDTO {
         this.fruitBox = entity.getFruitBox();
     }
 
+    @Getter
     public static class UserFruitResponseDTO {
         private Long userId;
         private String nickname;

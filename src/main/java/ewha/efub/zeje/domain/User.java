@@ -57,7 +57,8 @@ public class User extends TimeEntity{
         this.profileUrl = profileUrl;
     }
 
-    public void updateFruitBox(Integer fruitBox) {
-        this.fruitBox += fruitBox;
+    public void updateFruitBox(Boolean add, Integer fruitBox) {
+        if(add) this.fruitBox += fruitBox;
+        else this.fruitBox -= fruitBox;
     }
 }
