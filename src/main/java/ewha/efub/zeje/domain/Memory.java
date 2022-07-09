@@ -14,10 +14,11 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Page extends TimeEntity {
+@Table(name = "memory")
+public class Memory extends TimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pageId;
+    private Long memoryId;
 
     @ManyToOne
     @JoinColumn(name = "diary_id")
@@ -35,7 +36,7 @@ public class Page extends TimeEntity {
     private String image;
 
     @Builder
-    Page(Diary diary, String title, String content, String image){
+    public Memory(Diary diary, String title, String content, String image){
         this.diary = diary;
         this.title = title;
         this.content = content;
