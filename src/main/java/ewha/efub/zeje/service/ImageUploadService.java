@@ -50,15 +50,12 @@ public class ImageUploadService {
                 .build();
     }
 
-    //유저 프로필 사진 업로드용 함수
     public String uploadImage(String currentFile, MultipartFile file) throws IOException {
         boolean fileTypeFlag = true;
 
-        //png, jpeg가 맞는지 확인
         if(file!=null){
             fileTypeFlag = checkContentType(file);
 
-            //맞으면, file 올리기 -
             if(fileTypeFlag == true) {
                 deleteS3(0, currentFile);
                 String fileName = uploadS3(0, file);
@@ -71,12 +68,9 @@ public class ImageUploadService {
         return "null error";
     }
 
-    /*프로필 사진 이외 업로드용 함수 - 프로필은 업데이트를 해서 추가코드가 더 있어서 서로 분리해서 오버로딩함!
-    directory - s3내에 폴더 3개 만들어서 관리함 0.프로필 1.다이어리 2.리뷰*/
     public String uploadImage(int directory, MultipartFile file) throws IOException {
         boolean fileTypeFlag = true;
 
-        //png, jpeg가 맞는지 확인
         if(file!=null){
             fileTypeFlag = checkContentType(file);
 
