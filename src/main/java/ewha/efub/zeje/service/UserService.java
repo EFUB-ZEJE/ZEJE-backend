@@ -2,6 +2,7 @@ package ewha.efub.zeje.service;
 
 import ewha.efub.zeje.domain.User;
 import ewha.efub.zeje.domain.UserRepository;
+import ewha.efub.zeje.dto.UserRequestDTO;
 import ewha.efub.zeje.dto.UserResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+
+import static ewha.efub.zeje.dto.UserRequestDTO.*;
+import static ewha.efub.zeje.dto.UserResponseDTO.*;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +24,19 @@ public class UserService {
     public UserResponseDTO findUser(Long userId) {
         User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
         return new UserResponseDTO(user);
+    }
+
+    @Transactional
+    public UserFruitResponseDTO findFruitBox(Long userId) {
+        User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
+        return new UserFruitResponseDTO(user);
+    }
+
+    @Transactional
+    public UserFruitResponseDTO modifyFruitBox(Long userId, FruitRequestDTO fruitRequestDTO) {
+        User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
+        user.updateFruitBox(fruitRequestDTO.getFruitBox());
+        return new UserFruitResponseDTO(user);
     }
 
     @Transactional

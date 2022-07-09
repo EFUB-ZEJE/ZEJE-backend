@@ -57,4 +57,7 @@ public class User extends TimeEntity{
         this.profileUrl = profileUrl;
     }
 
+    public void updateFruitBox(Integer fruitBox) {
+        this.fruitBox += fruitBox;
+    }
 }

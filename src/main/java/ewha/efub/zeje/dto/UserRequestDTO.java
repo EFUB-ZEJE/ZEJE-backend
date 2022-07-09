@@ -15,6 +15,17 @@ public class UserRequestDTO {
         this.nickname = nickname;
     }
 
+    @Getter
+    @NoArgsConstructor
+    public static class FruitRequestDTO {
+        private Integer fruitBox;
+
+        @Builder
+        public FruitRequestDTO (Integer fruitBox) {
+            this.fruitBox = fruitBox;
+        }
+    }
+
 
 
 }
