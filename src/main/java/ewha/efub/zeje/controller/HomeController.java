@@ -13,4 +13,9 @@ public class HomeController {
         return "login";
     }
 
+    @GetMapping("/fruitTest")
+    public String fruitTest() {
+        return "fruitTest";
+    }
+
 }
