@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor
+@Table(name = "diary")
 public class Diary extends TimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -9,8 +9,11 @@ import org.json.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,12 +58,25 @@ public class SpotService {
                 .collect(Collectors.toList());
     }
 
-    public SpotDTO findSpotDetail(Long spotId){
+    public SpotDTO findSpotDetail(Long spotId) {
         Optional<Spot> spotWrapper = spotRepository.findById(spotId);
         Spot spot = spotWrapper.get();
         SpotDTO spotDTO = modelMapper.map(spot, SpotDTO.class);
 
         return spotDTO;
+    }
+
+    public List<SpotDTO> findFlowerSpot() {
+        long count = spotRepository.countByContentIdIsNotAndCategoryEquals(0L, "여행");
+        int random = (int) (Math.random() * count / 10);
+        int index = random == 0? random : random - 1;
+
+        Page<Spot> spotPage = spotRepository.findAllByContentIdIsNotAndCategoryEquals(0L, "여행", PageRequest.of(index, 10));
+
+        List<Spot> spotList = spotPage.toList();
+        return spotList.stream()
+                .map(spot -> modelMapperSearch.map(spot, SpotDTO.class))
+                .collect(Collectors.toList());
     }
 
     @Value("${api.serviceKey}")
