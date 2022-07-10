@@ -17,6 +17,10 @@ public class User extends TimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
+    @Column
+    @NotNull
+    private Long kakaoId;
+
     @Column(length = 45)
     @NotNull
     private String nickname;
@@ -37,7 +41,8 @@ public class User extends TimeEntity{
     private Boolean deleteFlag;
 
     @Builder
-    public User(String nickname, String profileUrl, String email) {
+    public User(Long kakaoId, String nickname, String profileUrl, String email) {
+        this.kakaoId = kakaoId;
         this.nickname = nickname;
         this.profileUrl = profileUrl;
         this.email = email;
