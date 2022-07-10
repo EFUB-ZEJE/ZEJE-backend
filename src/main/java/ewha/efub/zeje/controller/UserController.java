@@ -13,36 +13,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+import static ewha.efub.zeje.dto.UserRequestDTO.*;
+import static ewha.efub.zeje.dto.UserResponseDTO.*;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final HttpServletRequest httpServletRequest;
     private final UserService userService;
 
-
-    @GetMapping("/currentUser")
-    public String userCurrent() {
-        HttpSession httpsession = httpServletRequest.getSession();
-        SessionUserDTO user = (SessionUserDTO) httpsession.getAttribute("user");
-        if(user != null) {
-            String response = user.getUserId().toString();
-            return response;
-        }
-        else {
-            String fail = "fail";
-            return fail;
-        }
-    }
-
-    @GetMapping("/{userId}")
-    public UserResponseDTO userDetails(@PathVariable Long userId) {
+    @GetMapping("/account/profile")
+    public UserResponseDTO userDetails() {
+        Long userId = userService.findSessionUser();
         UserResponseDTO userDTO = userService.findUser(userId);
         return userDTO;
     }
 
-    @DeleteMapping ("/{userId}")
-    public String userRemove(@PathVariable Long userId) {
+    @DeleteMapping ("/account")
+    public String userRemove() {
+        Long userId = userService.findSessionUser();
         boolean success = userService.removeUser(userId);
         if(success) {
             return userId.toString() + "번 유저 탈퇴처리 완료";
@@ -52,8 +41,21 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/{userId}/image")
-    public UserResponseDTO updateProfileByNum(@PathVariable Long userId, @RequestParam(value="nickname", required = false) String nickname, @RequestParam(value="uploadFile", required = false) MultipartFile uploadFile) throws IOException {
+    @PatchMapping("/account/profile")
+    public UserResponseDTO userModify(@RequestParam(value="nickname", required = false) String nickname, @RequestParam(value="uploadFile", required = false) MultipartFile uploadFile) throws IOException {
+        Long userId = userService.findSessionUser();
         return userService.updateProfile(userId, nickname, uploadFile);
+    }
+
+    @GetMapping("/account/profile/fruitBox")
+    public UserFruitResponseDTO fruitDetails() {
+        Long userId = userService.findSessionUser();
+        return userService.findFruitBox(userId);
+    }
+
+    @PostMapping("/account/profile/fruitBox")
+    public UserFruitResponseDTO fruitModify(@RequestBody FruitRequestDTO fruitRequestDTO) {
+        Long userId = userService.findSessionUser();
+        return userService.modifyFruitBoxAdd(userId, fruitRequestDTO);
     }
 }

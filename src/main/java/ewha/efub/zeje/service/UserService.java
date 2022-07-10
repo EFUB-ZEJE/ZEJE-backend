@@ -2,24 +2,64 @@ package ewha.efub.zeje.service;
 
 import ewha.efub.zeje.domain.User;
 import ewha.efub.zeje.domain.UserRepository;
+import ewha.efub.zeje.dto.SessionUserDTO;
+import ewha.efub.zeje.dto.UserRequestDTO;
 import ewha.efub.zeje.dto.UserResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.io.IOException;
+
+import static ewha.efub.zeje.dto.UserRequestDTO.*;
+import static ewha.efub.zeje.dto.UserResponseDTO.*;
 
 @RequiredArgsConstructor
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final ImageUploadService imageUploadService;
+    private final HttpSession httpSession;
+
+    @Transactional
+    public Long findSessionUser() {
+        SessionUserDTO user = (SessionUserDTO) httpSession.getAttribute("user");
+        if(user != null) {
+            Long userId = user.getUserId();
+            return userId;
+        }
+        else {
+            return null;
+        }
+    }
 
     @Transactional
     public UserResponseDTO findUser(Long userId) {
         User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
         return new UserResponseDTO(user);
+    }
+
+    @Transactional
+    public UserFruitResponseDTO findFruitBox(Long userId) {
+        User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
+        return new UserFruitResponseDTO(user);
+    }
+
+    @Transactional
+    public UserFruitResponseDTO modifyFruitBoxAdd(Long userId, FruitRequestDTO fruitRequestDTO) {
+        User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
+        user.updateFruitBox(true, fruitRequestDTO.getFruitBox());
+        return new UserFruitResponseDTO(user);
+    }
+
+    @Transactional
+    public UserFruitResponseDTO modifyFruitBoxSub(Long userId, FruitRequestDTO fruitRequestDTO) {
+        User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
+        user.updateFruitBox(false, fruitRequestDTO.getFruitBox());
+        return new UserFruitResponseDTO(user);
     }
 
     @Transactional

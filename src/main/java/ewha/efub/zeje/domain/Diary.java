@@ -14,8 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor
-@MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
+@Table(name = "diary")
 public class Diary extends TimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
