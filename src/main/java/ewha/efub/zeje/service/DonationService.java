@@ -4,8 +4,8 @@ import ewha.efub.zeje.domain.Donation;
 import ewha.efub.zeje.domain.DonationRepository;
 import ewha.efub.zeje.domain.User;
 import ewha.efub.zeje.domain.UserRepository;
-import ewha.efub.zeje.dto.DonationRequestDTO;
 import ewha.efub.zeje.dto.DonationResponseDTO;
+import ewha.efub.zeje.dto.FruitRequestDTO;
 import ewha.efub.zeje.dto.UserResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,12 +38,14 @@ public class DonationService {
         return new DonationTotalResponseDTO(userId, fruitTotal);
     }
 
-    public Donation buildDonation(Long userId, DonationRequestDTO donationRequestDTO) {
+    public Donation buildDonation(Long userId, FruitRequestDTO fruitRequestDTO) {
         User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
+
         Donation donation = Donation.builder()
-                .fruit(donationRequestDTO.getFruit())
+                .fruit(fruitRequestDTO.getFruitBox())
                 .user(user)
                 .build();
+
         return donation;
     }
 }

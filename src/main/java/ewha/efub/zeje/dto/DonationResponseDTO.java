@@ -15,6 +15,7 @@ public class DonationResponseDTO {
         this.fruit = entity.getFruit();
     }
 
+    @Getter
     public static class DonationTotalResponseDTO {
         private Long userId;
         private Integer fruitTotal;

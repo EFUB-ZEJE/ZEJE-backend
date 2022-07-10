@@ -1,5 +1,6 @@
 package ewha.efub.zeje.controller;
 
+import ewha.efub.zeje.dto.FruitRequestDTO;
 import ewha.efub.zeje.dto.SessionUserDTO;
 import ewha.efub.zeje.dto.UserRequestDTO;
 import ewha.efub.zeje.dto.UserResponseDTO;

@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class DonationRequestDTO {
-    private Integer fruit;
+public class FruitRequestDTO {
+    private Integer fruitBox;
 
     @Builder
-    public DonationRequestDTO(Integer fruit) {
-        this.fruit = fruit;
+    public FruitRequestDTO (Integer fruitBox) {
+        this.fruitBox = fruitBox;
     }
 }

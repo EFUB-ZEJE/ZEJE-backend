@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script language="javascript" type="text/javascript">
+  var output;
+
+  function init() {
+    output = document.getElementById("output");
+    console.log("init");
+  }
+
+  function postFruit() {
+    console.log("귤포인트 추가하기")
+    fetch('http://localhost:8080/users/account/profile/fruitBox', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        fruitBox: 3
+      }),
+    }).then(res => res.text())
+            .then(res => {
+              writeToScreen("귤 추가 완료: " + res)
+            })
+  }
+
+  function postDonation() {
+      console.log("귤포인트 기부하기")
+      fetch('http://localhost:8080/donations', {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+              fruitBox: 1
+          }),
+      }).then(res => res.text())
+          .then(res => {
+              writeToScreen("귤 기부 완료: " + res)
+          })
+  }
+
+  function getDonation() {
+      console.log("귤포인트 기부하기")
+      fetch('http://localhost:8080/donations')
+      .then(res => res.text())
+          .then(res => {
+              writeToScreen("귤 기부 총액: " + res)
+          })
+  }
+
+  function getUser() {
+      console.log("귤포인트 기부하기")
+      fetch('http://localhost:8080/users/account/profile/fruitBox')
+          .then(res => res.text())
+          .then(res => {
+              writeToScreen("유저 정보: " + res)
+          })
+  }
+
+  function writeToScreen(message) {
+    var pre = document.createElement("p");
+    pre.style.wordWrap = "break-word";
+    pre.innerHTML = message;
+    output.appendChild(pre);
+  }
+
+  window.addEventListener("load", init, false);
+
+</script>
+
+</body>
+<h2>귤포인트 페이지 - 탭하나 더 열어서 로그인 후 이용</h2>
+<div id="output"></div>
+<form>
+    <input type="button" value="유저 정보" onclick="getUser()">
+    <input type="button" value="귤포인트 3 추가" onclick="postFruit()">
+    <input type="button" value="귤포인트 1 기부하기" onclick="postDonation()">
+    <input type="button" value="귤포인트 기부 총액" onclick="getDonation()">
+</form>
+</html>
