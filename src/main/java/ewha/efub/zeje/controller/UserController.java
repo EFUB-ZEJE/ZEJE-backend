@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+import static ewha.efub.zeje.dto.UserRequestDTO.*;
+import static ewha.efub.zeje.dto.UserResponseDTO.*;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")
@@ -52,8 +55,18 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/{userId}/image")
-    public UserResponseDTO updateProfileByNum(@PathVariable Long userId, @RequestParam(value="nickname", required = false) String nickname, @RequestParam(value="uploadFile", required = false) MultipartFile uploadFile) throws IOException {
+    @PatchMapping("/{userId}")
+    public UserResponseDTO userModify(@PathVariable Long userId, @RequestParam(value="nickname", required = false) String nickname, @RequestParam(value="uploadFile", required = false) MultipartFile uploadFile) throws IOException {
         return userService.updateProfile(userId, nickname, uploadFile);
+    }
+
+    @GetMapping("/{userId}/fruitBox")
+    public UserFruitResponseDTO fruitDetails(@PathVariable Long userId) {
+        return userService.findFruitBox(userId);
+    }
+
+    @PostMapping("/{userId}/fruitBox")
+    public UserFruitResponseDTO fruitModify(@PathVariable Long userId, @RequestBody FruitRequestDTO fruitRequestDTO) {
+        return userService.modifyFruitBoxAdd(userId, fruitRequestDTO);
     }
 }

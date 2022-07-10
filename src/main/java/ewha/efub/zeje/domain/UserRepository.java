@@ -14,5 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByUserIdAndDeleteFlagFalse(Long userId);
 
     //로그인인지 회원가입인지 확인용
+    User findByKakaoId(Long kakaoId);
+
     User findByEmail(String email);
 }

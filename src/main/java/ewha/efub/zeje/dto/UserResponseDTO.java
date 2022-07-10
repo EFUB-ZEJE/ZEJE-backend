@@ -18,4 +18,17 @@ public class UserResponseDTO {
         this.profileUrl = entity.getProfileUrl();
         this.fruitBox = entity.getFruitBox();
     }
+
+    @Getter
+    public static class UserFruitResponseDTO {
+        private Long userId;
+        private String nickname;
+        private Integer fruitBox;
+
+        public UserFruitResponseDTO(User entity) {
+            this.userId = entity.getUserId();
+            this.nickname = entity.getNickname();
+            this.fruitBox = entity.getFruitBox();
+        }
+    }
 }
