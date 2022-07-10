@@ -44,14 +44,15 @@ public class OAuthUserService implements OAuth2UserService<OAuth2UserRequest, OA
     }
 
     private User saveOrUpdate(String registrationId, OAuthAttributesDTO attributes){
-        User user = userRepository.findByEmail(attributes.getEmail());
+        User user = userRepository.findByKakaoId(attributes.getKakaoId());
         if(user!=null){
             System.out.println("로그인 유저: " + user.getNickname() + ", " + user.getEmail());
             return user;
         } else{
             userRepository.save(attributes.toEntity(registrationId));
-            User loginUser = userRepository.findByEmail(attributes.getEmail());
-            System.out.println("로그인 유저: " + loginUser.getNickname() + ", " + loginUser.getEmail());
+
+            User loginUser = userRepository.findByKakaoId(attributes.getKakaoId());
+            System.out.println("로그인 유저: " + loginUser.getNickname() + ", " + loginUser.getEmail()+ ", " + loginUser.getKakaoId());
             return loginUser;
         }
 
