@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class HomeController {
 
-    @GetMapping("/")
+    @GetMapping("/main")
     public String wssTest() {
         return "login";
     }
+
 }

@@ -10,14 +10,16 @@ import java.util.Map;
 @Getter
 public class OAuthAttributesDTO {
     private Map<String, Object> attributes;
+    private Long kakaoId;
     private String nameAttributeKey;
     private String name;
     private String email;
     private String picture;
 
     @Builder
-    public OAuthAttributesDTO(Map<String, Object> attributes, String nameAttributeKey, String name,
+    public OAuthAttributesDTO(Map<String, Object> attributes, Long kakaoId, String nameAttributeKey, String name,
                            String email, String picture){
+        this.kakaoId = kakaoId;
         this.attributes = attributes;
         this.nameAttributeKey = nameAttributeKey;
         this.name = name;
@@ -34,6 +36,7 @@ public class OAuthAttributesDTO {
         Map<String,Object> response = (Map<String, Object>)attributes.get("kakao_account");
         Map<String, Object> profile = (Map<String, Object>) response.get("profile");
         return OAuthAttributesDTO.builder()
+                .kakaoId((Long)attributes.get("id"))
                 .name((String)profile.get("nickname"))
                 .email((String)response.get("email"))
                 .picture((String)profile.get("profile_image_url"))
@@ -45,6 +48,7 @@ public class OAuthAttributesDTO {
 
     public User toEntity(String registrationId){//처음 가입할 때 User entity 생성
         User newUser = User.builder()
+                .kakaoId(kakaoId)
                 .nickname(name)
                 .profileUrl(picture)
                 .email(email)
