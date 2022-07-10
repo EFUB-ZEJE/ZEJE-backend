@@ -48,7 +48,7 @@ public class SpotController {
     }
 
     @PostMapping("/tourapi")
-    public String spotApiData(@RequestBody Map<String, String> body) {
+    public String spotApiSave(@RequestBody Map<String, String> body) {
         String cat1 = body.get("cat1");
         String cat2 = body.get("cat2");
         String cat3 = body.get("cat3");
