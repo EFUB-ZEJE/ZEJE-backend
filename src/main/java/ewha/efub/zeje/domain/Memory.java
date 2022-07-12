@@ -1,6 +1,7 @@
 package ewha.efub.zeje.domain;
 
 import com.sun.istack.NotNull;
+import ewha.efub.zeje.dto.diary.MemoryRequestDTO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,5 +42,10 @@ public class Memory extends TimeEntity {
         this.title = title;
         this.content = content;
         this.image = image;
+    }
+
+    public void updateMemory(MemoryRequestDTO dto) {
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
     }
 }
