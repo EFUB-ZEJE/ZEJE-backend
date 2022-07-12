@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -50,6 +51,29 @@ public class OAuthUserService implements OAuth2UserService<OAuth2UserRequest, OA
             return user;
         } else{
             userRepository.save(attributes.toEntity(registrationId));
+
+            User loginUser = userRepository.findByKakaoId(attributes.getKakaoId());
+            System.out.println("로그인 유저: " + loginUser.getNickname() + ", " + loginUser.getEmail()+ ", " + loginUser.getKakaoId());
+            return loginUser;
+        }
+
+    }
+
+    public Object loadUserPostman(Map<String,Object> attribute) {
+        OAuthAttributesDTO attributes = OAuthAttributesDTO.ofPostman(attribute);
+        User user = saveOrUpdatePostman(attributes);
+
+        httpSession.setAttribute("user",new SessionUserDTO(user));
+        return httpSession.getAttribute("user");
+    }
+
+    private User saveOrUpdatePostman(OAuthAttributesDTO attributes){
+        User user = userRepository.findByKakaoId(attributes.getKakaoId());
+        if(user!=null){
+            System.out.println("로그인 유저: " + user.getNickname() + ", " + user.getEmail());
+            return user;
+        } else{
+            userRepository.save(attributes.toEntityPostman());
 
             User loginUser = userRepository.findByKakaoId(attributes.getKakaoId());
             System.out.println("로그인 유저: " + loginUser.getNickname() + ", " + loginUser.getEmail()+ ", " + loginUser.getKakaoId());
