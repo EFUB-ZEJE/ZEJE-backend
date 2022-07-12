@@ -28,7 +28,7 @@ public class MemoryService {
         Diary diary = diaryRepository.findByDiaryId(diaryId)
                 .orElseThrow(() -> new IllegalArgumentException("다이어리가 없습니다. id= "+diaryId));
 
-        if(!file.isEmpty()) {
+        if(file!=null) {
             String fileUrl = imageUploadService.uploadImage(1, file);
             if(fileUrl.equals("type error")) return null;
             else if(fileUrl.equals("null error")) return null;
@@ -55,7 +55,12 @@ public class MemoryService {
         Memory memory = memoryRepository.findMemoryByMemoryId(memoryId)
                 .orElseThrow(() -> new IllegalArgumentException("일기가 없습니다. id= "+memoryId));
 
-        memory.updateMemory(requestDTO);
+        if(requestDTO.getTitle()!=null) {
+            memory.updateTitle(requestDTO.getTitle());
+        }
+        if(requestDTO.getContent()!=null) {
+            memory.updateContent(requestDTO.getContent());
+        }
         return new MemoryResponseDTO(memory);
     }
 

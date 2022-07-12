@@ -44,8 +44,11 @@ public class Memory extends TimeEntity {
         this.image = image;
     }
 
-    public void updateMemory(MemoryRequestDTO dto) {
-        this.title = dto.getTitle();
-        this.content = dto.getContent();
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
     }
 }
