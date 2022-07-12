@@ -45,8 +45,35 @@ public class OAuthAttributesDTO {
                 .build();
     }
 
-
     public User toEntity(String registrationId){//처음 가입할 때 User entity 생성
+        User newUser = User.builder()
+                .kakaoId(kakaoId)
+                .nickname(name)
+                .profileUrl(picture)
+                .email(email)
+                .build();
+        return newUser;
+    }
+
+
+    public static OAuthAttributesDTO ofPostman(Map<String, Object> attributes) {
+        return ofKakaoPostman(attributes);
+    }
+
+    private static OAuthAttributesDTO ofKakaoPostman(Map<String, Object> attributes) {
+        Map<String,Object> response = (Map<String, Object>)attributes.get("kakao_account");
+        Map<String, Object> profile = (Map<String, Object>) response.get("profile");
+        return OAuthAttributesDTO.builder()
+                .kakaoId((Long)attributes.get("id"))
+                .name((String)profile.get("nickname"))
+                .email((String)response.get("email"))
+                .picture((String)profile.get("profile_image_url"))
+                .attributes(attributes)
+                .nameAttributeKey("id")
+                .build();
+    }
+
+    public User toEntityPostman(){//처음 가입할 때 User entity 생성
         User newUser = User.builder()
                 .kakaoId(kakaoId)
                 .nickname(name)
