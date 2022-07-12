@@ -2,8 +2,8 @@ package ewha.efub.zeje.service;
 
 import ewha.efub.zeje.domain.User;
 import ewha.efub.zeje.domain.UserRepository;
-import ewha.efub.zeje.dto.OAuthAttributesDTO;
-import ewha.efub.zeje.dto.SessionUserDTO;
+import ewha.efub.zeje.dto.security.OAuthAttributesDTO;
+import ewha.efub.zeje.dto.security.SessionUserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;

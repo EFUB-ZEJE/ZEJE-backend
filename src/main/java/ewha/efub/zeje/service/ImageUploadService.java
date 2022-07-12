@@ -59,7 +59,7 @@ public class ImageUploadService {
             if(fileTypeFlag == true) {
                 deleteS3(0, currentFile);
                 String fileName = uploadS3(0, file);
-                return fileName;
+                return makeFileUrl(0, fileName);
             }
             else {
                 return "type error";
@@ -76,7 +76,7 @@ public class ImageUploadService {
 
             if(fileTypeFlag == true) {
                 String fileName = uploadS3(directory, file);
-                return fileName;
+                return makeFileUrl(directory, fileName);
             }
             else {
                 return "type error";
@@ -84,6 +84,8 @@ public class ImageUploadService {
         }
         return "null error";
     }
+
+
 
     public String uploadS3 (int directory, MultipartFile file) throws IOException {
         String fileName = makeFileName(file);
@@ -145,5 +147,15 @@ public class ImageUploadService {
         SimpleDateFormat date = new SimpleDateFormat("yyyyMMddHHmmss");
         String fileName = FilenameUtils.getBaseName(file.getOriginalFilename()) + "-" + date.format(new Date()) + "." + FilenameUtils.getExtension(file.getOriginalFilename());
         return fileName;
+    }
+
+    public String makeFileUrl(Integer directory, String filename) {
+        String strDirectory;
+
+        if(directory == 0) strDirectory = "/profile/";
+        else if (directory == 1) strDirectory = "/diary/";
+        else strDirectory = "/review/";
+
+        return "http://" + CLOUD_FRONT_DOMAIN_NAME + strDirectory + filename;
     }
 }

@@ -6,7 +6,6 @@ import ewha.efub.zeje.domain.User;
 import ewha.efub.zeje.domain.UserRepository;
 import ewha.efub.zeje.dto.DonationResponseDTO;
 import ewha.efub.zeje.dto.FruitRequestDTO;
-import ewha.efub.zeje.dto.UserResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
