@@ -1,10 +1,9 @@
-package ewha.efub.zeje.dto;
+package ewha.efub.zeje.dto.security;
 
 import ewha.efub.zeje.domain.User;
-import ewha.efub.zeje.domain.UserRepository;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+
 import java.util.Map;
 
 @Getter

@@ -1,4 +1,4 @@
-package ewha.efub.zeje.dto;
+package ewha.efub.zeje.dto.user;
 
 import ewha.efub.zeje.domain.User;
 import lombok.Getter;
