@@ -14,11 +14,11 @@ public class ReviewRequestDTO {
     private Integer score;
 
     @Builder
-    public ReviewRequestDTO(Review review) {
-        this.spotId = review.getSpot().getSpotId();
-        this.userId = review.getUser().getUserId();
-        this.content = review.getContent();
-        this.score = review.getScore();
+    public ReviewRequestDTO(Long spotId, Long userId, String content, Integer score) {
+        this.spotId = spotId;
+        this.userId = userId;
+        this.content = content;
+        this.score = score;
     }
 }
 
