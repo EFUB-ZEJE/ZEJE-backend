@@ -19,12 +19,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/diary")
+@RequestMapping("/diaries")
 public class DiaryController {
     private final MemoryService memoryService;
     private final DiaryService diaryService;
 
-    @PostMapping(value="/diaries")
+    @PostMapping()
     public String diaryAdd(@LoginUser SessionUserDTO sessionUser, @RequestParam String name, @RequestParam String description){
         DiaryRequestDTO diaryRequestDTO = DiaryRequestDTO.builder()
                 .name(name)
@@ -33,17 +33,17 @@ public class DiaryController {
         return diaryService.addDiary(sessionUser.getUserId(), diaryRequestDTO);
     }
 
-    @GetMapping(value="/diaries")
+    @GetMapping()
     public List<DiaryResponseDTO> diaryList(@LoginUser SessionUserDTO sessionUser){
         return diaryService.findDiaryList(sessionUser.getUserId());
     }
 
-    @DeleteMapping(value="/diaries/{diaryId}")
+    @DeleteMapping(value="/{diaryId}")
     public String diaryRemove(@LoginUser SessionUserDTO sessionUser, @PathVariable Long diaryId){
         return diaryService.removeDiary(sessionUser.getUserId(), diaryId);
     }
 
-    @PatchMapping(value="/diaries/{diaryId}")
+    @PatchMapping(value="/{diaryId}")
     public String diaryModify(@LoginUser SessionUserDTO sessionUser, @PathVariable Long diaryId, @RequestParam String name){
         return diaryService.modifyDiaryName(sessionUser.getUserId(), diaryId, name);
     }
