@@ -1,7 +1,11 @@
 package ewha.efub.zeje.controller;
 
+import ewha.efub.zeje.domain.Diary;
+import ewha.efub.zeje.dto.diary.DiaryRequestDTO;
+import ewha.efub.zeje.dto.diary.DiaryResponseDTO;
 import ewha.efub.zeje.dto.diary.MemoryRequestDTO;
 import ewha.efub.zeje.dto.diary.MemoryResponseDTO;
+import ewha.efub.zeje.service.DiaryService;
 import ewha.efub.zeje.service.MemoryService;
 import ewha.efub.zeje.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +21,35 @@ import java.util.List;
 public class DiaryController {
     private final MemoryService memoryService;
     private final UserService userService;
+    private final DiaryService diaryService;
+
+    @PostMapping(value="/diaries")
+    public String diaryAdd(@RequestParam String name, @RequestParam String description){
+        Long userId = userService.findSessionUser();
+        DiaryRequestDTO diaryRequestDTO = DiaryRequestDTO.builder()
+                .name(name)
+                .description(description)
+                .build();
+        return diaryService.addDiary(userId, diaryRequestDTO);
+    }
+
+    @GetMapping(value="/diaries")
+    public List<DiaryResponseDTO> diaryList(){
+        Long userId = userService.findSessionUser();
+        return diaryService.findDiaryList(userId);
+    }
+
+    @DeleteMapping(value="/diaries/{diaryId}")
+    public String diaryRemove(@PathVariable Long diaryId){
+        Long userId = userService.findSessionUser();
+        return diaryService.removeDiary(userId, diaryId);
+    }
+
+    @PatchMapping(value="/diaries/{diaryId}")
+    public String diaryModify(@PathVariable Long diaryId, @RequestParam String name){
+        Long userId = userService.findSessionUser();
+        return diaryService.modifyDiaryName(userId, diaryId, name);
+    }
 
     @GetMapping("/{diaryId}/memories")
     public List<MemoryResponseDTO> memoryList(@PathVariable Long diaryId) {
