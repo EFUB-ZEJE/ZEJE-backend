@@ -1,9 +1,13 @@
 package ewha.efub.zeje.controller;
 
 import ewha.efub.zeje.config.LoginUser;
+import ewha.efub.zeje.dto.diary.DiaryRequestDTO;
+import ewha.efub.zeje.dto.diary.DiaryResponseDTO;
 import ewha.efub.zeje.dto.diary.MemoryRequestDTO;
 import ewha.efub.zeje.dto.diary.MemoryResponseDTO;
 import ewha.efub.zeje.dto.security.SessionUserDTO;
+import ewha.efub.zeje.service.DiaryService;
+
 import ewha.efub.zeje.service.MemoryService;
 import ewha.efub.zeje.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +19,34 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/diary")
+@RequestMapping("/diaries")
 public class DiaryController {
     private final MemoryService memoryService;
-    private final UserService userService;
+    private final DiaryService diaryService;
+
+    @PostMapping()
+    public String diaryAdd(@LoginUser SessionUserDTO sessionUser, @RequestParam String name, @RequestParam String description){
+        DiaryRequestDTO diaryRequestDTO = DiaryRequestDTO.builder()
+                .name(name)
+                .description(description)
+                .build();
+        return diaryService.addDiary(sessionUser.getUserId(), diaryRequestDTO);
+    }
+
+    @GetMapping()
+    public List<DiaryResponseDTO> diaryList(@LoginUser SessionUserDTO sessionUser){
+        return diaryService.findDiaryList(sessionUser.getUserId());
+    }
+
+    @DeleteMapping(value="/{diaryId}")
+    public String diaryRemove(@LoginUser SessionUserDTO sessionUser, @PathVariable Long diaryId){
+        return diaryService.removeDiary(sessionUser.getUserId(), diaryId);
+    }
+
+    @PatchMapping(value="/{diaryId}")
+    public String diaryModify(@LoginUser SessionUserDTO sessionUser, @PathVariable Long diaryId, @RequestParam String name){
+        return diaryService.modifyDiaryName(sessionUser.getUserId(), diaryId, name);
+    }
 
     @GetMapping("/{diaryId}/memories")
     public List<MemoryResponseDTO> memoryList(@LoginUser SessionUserDTO sessionUser, @PathVariable Long diaryId) {

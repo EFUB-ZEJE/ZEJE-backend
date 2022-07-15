@@ -10,6 +10,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -35,10 +37,21 @@ public class Diary extends TimeEntity {
     @LastModifiedDate
     private LocalDateTime updatedDate;
 
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.REMOVE)
+    private List<Memory> memories = new ArrayList<>();
+
     @Builder
     public Diary(User user, String name, String description) {
         this.user = user;
         this.name = name;
         this.description = description;
+    }
+
+    public Long getUserId(){
+        return this.getUser().getUserId();
+    }
+
+    public void updateName(String name){
+        this.name = name;
     }
 }
