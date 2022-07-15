@@ -1,7 +1,9 @@
 package ewha.efub.zeje.controller;
 
+import ewha.efub.zeje.config.LoginUser;
 import ewha.efub.zeje.dto.diary.MemoryRequestDTO;
 import ewha.efub.zeje.dto.diary.MemoryResponseDTO;
+import ewha.efub.zeje.dto.security.SessionUserDTO;
 import ewha.efub.zeje.service.MemoryService;
 import ewha.efub.zeje.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +21,8 @@ public class DiaryController {
     private final UserService userService;
 
     @GetMapping("/{diaryId}/memories")
-    public List<MemoryResponseDTO> memoryList(@PathVariable Long diaryId) {
-        Long userId = userService.findSessionUser();
-        Boolean userFlag = memoryService.checkOwner(userId, diaryId);
+    public List<MemoryResponseDTO> memoryList(@LoginUser SessionUserDTO sessionUser, @PathVariable Long diaryId) {
+        Boolean userFlag = memoryService.checkOwner(sessionUser.getUserId(), diaryId);
 
         if(userFlag) {
             return memoryService.findMemoryList(diaryId);
@@ -38,10 +39,10 @@ public class DiaryController {
     }
 
     @PostMapping("/{diaryId}/memories")
-    public MemoryResponseDTO memoryAdd(@PathVariable Long diaryId, @RequestParam (value="title") String title, @RequestParam (value="content") String content,
+    public MemoryResponseDTO memoryAdd(@LoginUser SessionUserDTO sessionUser, @PathVariable Long diaryId,
+                                       @RequestParam (value="title") String title, @RequestParam (value="content") String content,
                                        @RequestParam (value="image", required = false)MultipartFile file) throws IOException {
-        Long userId = userService.findSessionUser();
-        Boolean userFlag = memoryService.checkOwner(userId, diaryId);
+        Boolean userFlag = memoryService.checkOwner(sessionUser.getUserId(), diaryId);
 
         if(userFlag) {
             MemoryRequestDTO dto = MemoryRequestDTO.builder()
@@ -52,9 +53,8 @@ public class DiaryController {
     }
 
     @DeleteMapping("/{diaryId}/memories/{memoryId}")
-    public String memoryDelete(@PathVariable Long diaryId, @PathVariable Long memoryId) {
-        Long userId = userService.findSessionUser();
-        Boolean userFlag = memoryService.checkOwner(userId, diaryId);
+    public String memoryDelete(@LoginUser SessionUserDTO sessionUser, @PathVariable Long diaryId, @PathVariable Long memoryId) {
+        Boolean userFlag = memoryService.checkOwner(sessionUser.getUserId(), diaryId);
         Boolean diaryFlag = memoryService.checkDiary(diaryId, memoryId);
 
         if(userFlag && diaryFlag) {
@@ -63,10 +63,9 @@ public class DiaryController {
     }
 
     @PatchMapping("/{diaryId}/memories/{memoryId}")
-    public MemoryResponseDTO memoryModify(@PathVariable Long diaryId, @PathVariable Long memoryId,
+    public MemoryResponseDTO memoryModify(@LoginUser SessionUserDTO sessionUser, @PathVariable Long diaryId, @PathVariable Long memoryId,
                                           @RequestBody MemoryRequestDTO requestDTO) {
-        Long userId = userService.findSessionUser();
-        Boolean userFlag = memoryService.checkOwner(userId, diaryId);
+        Boolean userFlag = memoryService.checkOwner(sessionUser.getUserId(), diaryId);
         Boolean diaryFlag = memoryService.checkDiary(diaryId, memoryId);
 
         if(userFlag && diaryFlag) {

@@ -1,13 +1,17 @@
 package ewha.efub.zeje.controller;
 
+import ewha.efub.zeje.config.LoginUser;
 import ewha.efub.zeje.dto.FruitRequestDTO;
+import ewha.efub.zeje.dto.security.SessionUserDTO;
 import ewha.efub.zeje.dto.user.UserResponseDTO;
+import ewha.efub.zeje.service.OAuthUserService;
 import ewha.efub.zeje.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static ewha.efub.zeje.dto.user.UserResponseDTO.*;
 
@@ -16,20 +20,24 @@ import static ewha.efub.zeje.dto.user.UserResponseDTO.*;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+    private final OAuthUserService oAuthUserService;
+
+    @PostMapping("/postman")
+    public Object sessionTest(@RequestBody Map<String,Object> attribute) {
+        return oAuthUserService.loadUserPostman(attribute);
+    }
 
     @GetMapping("/account/profile")
-    public UserResponseDTO userDetails() {
-        Long userId = userService.findSessionUser();
-        UserResponseDTO userDTO = userService.findUser(userId);
+    public UserResponseDTO userDetails(@LoginUser SessionUserDTO sessionUser) {
+        UserResponseDTO userDTO = userService.findUser(sessionUser.getUserId());
         return userDTO;
     }
 
     @DeleteMapping ("/account")
-    public String userRemove() {
-        Long userId = userService.findSessionUser();
-        boolean success = userService.removeUser(userId);
+    public String userRemove(@LoginUser SessionUserDTO sessionUser) {
+        boolean success = userService.removeUser(sessionUser.getUserId());
         if(success) {
-            return userId.toString() + "번 유저 탈퇴처리 완료";
+            return "유저 탈퇴처리 완료";
         }
         else {
             return "탈퇴실패";
@@ -37,20 +45,19 @@ public class UserController {
     }
 
     @PatchMapping("/account/profile")
-    public UserResponseDTO userModify(@RequestParam(value="nickname", required = false) String nickname, @RequestParam(value="uploadFile", required = false) MultipartFile uploadFile) throws IOException {
-        Long userId = userService.findSessionUser();
-        return userService.updateProfile(userId, nickname, uploadFile);
+    public UserResponseDTO userModify(@LoginUser SessionUserDTO sessionUser,
+                                      @RequestParam(value="nickname", required = false) String nickname,
+                                      @RequestParam(value="uploadFile", required = false) MultipartFile uploadFile) throws IOException {
+        return userService.updateProfile(sessionUser.getUserId(), nickname, uploadFile);
     }
 
     @GetMapping("/account/profile/fruitBox")
-    public UserFruitResponseDTO fruitDetails() {
-        Long userId = userService.findSessionUser();
-        return userService.findFruitBox(userId);
+    public UserFruitResponseDTO fruitDetails(@LoginUser SessionUserDTO sessionUser) {
+        return userService.findFruitBox(sessionUser.getUserId());
     }
 
     @PostMapping("/account/profile/fruitBox")
-    public UserFruitResponseDTO fruitModify(@RequestBody FruitRequestDTO fruitRequestDTO) {
-        Long userId = userService.findSessionUser();
-        return userService.modifyFruitBoxAdd(userId, fruitRequestDTO);
+    public UserFruitResponseDTO fruitModify(@LoginUser SessionUserDTO sessionUser, @RequestBody FruitRequestDTO fruitRequestDTO) {
+        return userService.modifyFruitBoxAdd(sessionUser.getUserId(), fruitRequestDTO);
     }
 }
