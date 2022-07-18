@@ -14,12 +14,13 @@ import static ewha.efub.zeje.dto.DonationResponseDTO.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/donations")
 public class DonationController {
     private final DonationService donationService;
     private final UserService userService;
 
     @Transactional
-    @PostMapping("/donations")
+    @PostMapping
     public DonationResponseDTO donationAdd(@RequestBody FruitRequestDTO fruitRequestDTO) {
         Long userId = userService.findSessionUser();
         Donation donation = donationService.buildDonation(userId, fruitRequestDTO);
@@ -28,7 +29,7 @@ public class DonationController {
         return donationService.addDonation(donation);
     }
 
-    @GetMapping("/donations")
+    @GetMapping
     public DonationTotalResponseDTO donationDetails() {
         Long userId = userService.findSessionUser();
         return donationService.findDonations(userId);

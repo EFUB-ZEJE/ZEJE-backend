@@ -4,6 +4,8 @@ import ewha.efub.zeje.domain.Spot;
 import ewha.efub.zeje.domain.SpotRepository;
 import ewha.efub.zeje.domain.SpotType;
 import ewha.efub.zeje.dto.SpotDTO;
+import ewha.efub.zeje.util.errors.CustomException;
+import ewha.efub.zeje.util.errors.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.simple.parser.JSONParser;
@@ -59,8 +61,8 @@ public class SpotService {
     }
 
     public SpotDTO findSpotDetail(Long spotId) {
-        Optional<Spot> spotWrapper = spotRepository.findById(spotId);
-        Spot spot = spotWrapper.get();
+        Spot spot = spotRepository.findById(spotId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SPOT_NOT_FOUND));
         SpotDTO spotDTO = modelMapper.map(spot, SpotDTO.class);
 
         return spotDTO;

@@ -91,9 +91,18 @@ public class ImageUploadService {
         String fileName = makeFileName(file);
         String strDirectory;
 
-        if(directory == 0) strDirectory = "/profile";
-        else if (directory == 1) strDirectory = "/diary";
-        else strDirectory = "/review";
+        if(directory == 0) {
+            strDirectory = "/profile";
+        }
+        else if (directory == 1) {
+            strDirectory = "/diary";
+        }
+        else if (directory == 2) {
+            strDirectory = "/review";
+        }
+        else {
+            strDirectory = "/etc";
+        }
 
         s3Client.putObject(new PutObjectRequest(bucket + strDirectory, fileName, file.getInputStream(), null)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
