@@ -6,6 +6,8 @@ import ewha.efub.zeje.domain.Memory;
 import ewha.efub.zeje.domain.MemoryRepository;
 import ewha.efub.zeje.dto.diary.MemoryRequestDTO;
 import ewha.efub.zeje.dto.diary.MemoryResponseDTO;
+import ewha.efub.zeje.util.errors.CustomException;
+import ewha.efub.zeje.util.errors.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +28,7 @@ public class MemoryService {
     @Transactional
     public MemoryResponseDTO addMemory(Long diaryId, MemoryRequestDTO requestDTO, MultipartFile file) throws IOException {
         Diary diary = diaryRepository.findByDiaryId(diaryId)
-                .orElseThrow(() -> new IllegalArgumentException("다이어리가 없습니다. id= "+diaryId));
+                .orElseThrow(() -> new CustomException(ErrorCode.DIARY_NOT_FOUND));
 
         if(file!=null) {
             String fileUrl = imageUploadService.uploadImage(1, file);
@@ -53,7 +55,7 @@ public class MemoryService {
     @Transactional
     public MemoryResponseDTO modifyMemory(Long memoryId, MemoryRequestDTO requestDTO) {
         Memory memory = memoryRepository.findMemoryByMemoryId(memoryId)
-                .orElseThrow(() -> new IllegalArgumentException("일기가 없습니다. id= "+memoryId));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMORY_NOT_FOUND));
 
         if(requestDTO.getTitle()!=null) {
             memory.updateTitle(requestDTO.getTitle());
@@ -67,14 +69,17 @@ public class MemoryService {
     @Transactional
     public MemoryResponseDTO findMemory(Long memoryId) {
         Memory memory = memoryRepository.findMemoryByMemoryId(memoryId)
-                .orElseThrow(()-> new IllegalArgumentException("일기가 없습니다. id= "+memoryId));
+                .orElseThrow(()-> new CustomException(ErrorCode.MEMORY_NOT_FOUND));
 
         return new MemoryResponseDTO(memory);
     }
 
     @Transactional
     public List<MemoryResponseDTO> findMemoryList(Long diaryId) {
-        return memoryRepository.findMemoriesByDiary_DiaryId(diaryId).stream()
+        Diary diary = diaryRepository.findByDiaryId(diaryId)
+                .orElseThrow(() -> new CustomException(ErrorCode.DIARY_NOT_FOUND));
+        return memoryRepository.findMemoriesByDiary_DiaryId(diary.getDiaryId())
+                .stream()
                 .map(MemoryResponseDTO::new)
                 .collect(Collectors.toList());
     }

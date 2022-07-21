@@ -5,6 +5,8 @@ import ewha.efub.zeje.domain.UserRepository;
 import ewha.efub.zeje.dto.FruitRequestDTO;
 import ewha.efub.zeje.dto.security.SessionUserDTO;
 import ewha.efub.zeje.dto.user.UserResponseDTO;
+import ewha.efub.zeje.util.errors.CustomException;
+import ewha.efub.zeje.util.errors.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +32,7 @@ public class UserService {
             return userId;
         }
         else {
-            return null;
+            throw new CustomException(ErrorCode.INVALID_SESSION_USER);
         }
     }
 
