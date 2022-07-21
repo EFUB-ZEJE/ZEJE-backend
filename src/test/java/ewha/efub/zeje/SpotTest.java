@@ -19,7 +19,8 @@ public class SpotTest {
     @Autowired
     SpotRepository spotRepository;
 
-    Long contentId;
+    String contentId;
+    //Long contentId;
     String category;
     String type;
     String name;
@@ -30,7 +31,8 @@ public class SpotTest {
 
     @Test
     public void 컬럼_정상입력_테스트() {
-        contentId = (long)123;
+        contentId = "123";
+        //contentId = (long)123;
         category = "여행";
         type = "힐링";
         name = "최고 맛집";

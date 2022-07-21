@@ -18,7 +18,8 @@ public class Spot {
 
     @NotNull
     @Column(name = "content_id")
-    private Long contentId;
+    private String contentId;
+    //private Long contentId;
 
     @NotNull
     @Column(length = 45)
@@ -42,7 +43,7 @@ public class Spot {
     private String link;
 
     @Builder
-    public Spot(Long contentId, String category, String type, String name, String location, String description, String link) {
+    public Spot(String contentId, String category, String type, String name, String location, String description, String link) {
         this.contentId = contentId;
         this.category = category;
         this.type = type;
