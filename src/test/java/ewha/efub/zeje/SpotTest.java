@@ -27,6 +27,8 @@ public class SpotTest {
     String description;
     String link;
     Spot spot;
+    String mapX;
+    String mapY;
 
     @Test
     public void 컬럼_정상입력_테스트() {
@@ -38,7 +40,7 @@ public class SpotTest {
         description = "설명";
         link = "http";
 
-        spot = new Spot(contentId, category, type, name, location, description, link);
+        spot = new Spot(contentId, category, type, name, location, description, link, mapX, mapY);
         assertThat(spotRepository.save(spot));
     }
 

@@ -89,7 +89,7 @@ public class SpotService {
         String type = selectType(cat1, cat2, cat3);
 
         String listApiUrl = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=" + serviceKey
-                + "&contentTypeId=12&areaCode=39&sigunguCode=&cat1=" + cat1 + "&cat2=" + cat2 + "&cat3=" + cat3 + "&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=263&pageNo=1";
+                + "&contentTypeId=12&areaCode=39&sigunguCode=&cat1=" + cat1 + "&cat2=" + cat2 + "&cat3=" + cat3 + "&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=300&pageNo=1";
 
         JSONObject parseItems = readTourApi(listApiUrl);
         JSONArray parseItemList = (JSONArray) parseItems.get("item");
@@ -113,10 +113,13 @@ public class SpotService {
             JSONObject parseDetailItems = readTourApi(detailApiUrl);
             JSONObject parseDetailItem = (JSONObject) parseDetailItems.get("item");
 
-            String description = parseDetailItem.has("overview")?(String) parseDetailItem.get("overview") : null;
+            String description = parseDetailItem.has("overview")? (String) parseDetailItem.get("overview") : null;
             String link = parseDetailItem.has("homepage")? (String) parseDetailItem.get("homepage") : null;
 
-            SpotDTO spotDTO = new SpotDTO(contentId, category, type, name, location, description, link);
+            String mapX = parseDetailItem.has("mapx")? String.valueOf(parseDetailItem.get("mapx")) : null;
+            String mapY = parseDetailItem.has("mapy")? String.valueOf(parseDetailItem.get("mapy")) : null;
+
+            SpotDTO spotDTO = new SpotDTO(contentId, category, type, name, location, description, link, mapX, mapY);
             Spot spot = spotDTO.toEntity();
             spotRepository.save(spot);
         }
