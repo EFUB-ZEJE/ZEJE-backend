@@ -17,7 +17,7 @@ public class SpotDTO {
 
     @NotNull
     private Long spotId;
-    private String contentId;
+    private Long contentId;
     @NotNull
     private String category;
     private String type;
@@ -29,7 +29,7 @@ public class SpotDTO {
     private String link;
 
     @Builder
-    public SpotDTO(String contentId, String category, String type, String name, String location, String description, String link) {
+    public SpotDTO(Long contentId, String category, String type, String name, String location, String description, String link) {
         this.contentId = contentId;
         this.category = category;
         this.type = type;

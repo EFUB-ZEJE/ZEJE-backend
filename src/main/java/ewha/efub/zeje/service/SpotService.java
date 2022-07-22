@@ -116,8 +116,7 @@ public class SpotService {
             String description = parseDetailItem.has("overview")?(String) parseDetailItem.get("overview") : null;
             String link = parseDetailItem.has("homepage")? (String) parseDetailItem.get("homepage") : null;
 
-            SpotDTO spotDTO = new SpotDTO(contentId.toString(), category, type, name, location, description, link);
-            //SpotDTO spotDTO = new SpotDTO(contentId, category, type, name, location, description, link);
+            SpotDTO spotDTO = new SpotDTO(contentId, category, type, name, location, description, link);
             Spot spot = spotDTO.toEntity();
             spotRepository.save(spot);
         }
