@@ -3,6 +3,8 @@ package ewha.efub.zeje.service;
 import ewha.efub.zeje.domain.*;
 import ewha.efub.zeje.dto.SpotDTO;
 import ewha.efub.zeje.dto.WishDTO;
+import ewha.efub.zeje.util.errors.CustomException;
+import ewha.efub.zeje.util.errors.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,20 +29,23 @@ public class WishService {
 
     @Transactional
     public String addWish(Long userId, Long spotId){
-        User user = userRepository.findById(userId).get();
-        Spot spot = spotRepository.findById(spotId).get();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Spot spot = spotRepository.findById(spotId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SPOT_NOT_FOUND));
         Wish wish = Wish.builder()
-                .user(userRepository.findById(userId).get())
-                .spot(spotRepository.findById(spotId).get())
+                .user(user)
+                .spot(spot)
                 .build();
         wishRepository.save(wish);
-        return "success";
+
+        return wish.getWishId().toString();
     }
 
     @Transactional
     public String removeWish(Long userId, Long spotId){
         Long wishId = wishRepository.findByUser_UserIdAndSpot_SpotId(userId, spotId)
-                .get()
+                .orElseThrow(() -> new CustomException(ErrorCode.WISH_NOT_FOUND))
                 .getWishId();
         wishRepository.deleteById(wishId);
 
