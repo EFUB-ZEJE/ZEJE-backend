@@ -22,7 +22,6 @@ import java.util.Map;
 @Service
 public class OAuthUserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final UserRepository userRepository;
-    private final HttpSession httpSession;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -35,49 +34,22 @@ public class OAuthUserService implements OAuth2UserService<OAuth2UserRequest, OA
         OAuthAttributesDTO attributes = OAuthAttributesDTO.of(registrationId, userNameAttributeName,
                 oAuth2User.getAttributes()); //OAuth2User의 attribute 담을 클래스
 
-        User user = saveOrUpdate(registrationId, attributes);
-
-        httpSession.setAttribute("user",new SessionUserDTO(user));
+        saveOrUpdate(registrationId, attributes);
 
         return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("USER")),
+                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
                 attributes.getAttributes(), attributes.getNameAttributeKey());
     }
 
-    private User saveOrUpdate(String registrationId, OAuthAttributesDTO attributes){
+    private void saveOrUpdate(String registrationId, OAuthAttributesDTO attributes){
         User user = userRepository.findByKakaoId(attributes.getKakaoId());
         if(user!=null){
             System.out.println("로그인 유저: " + user.getNickname() + ", " + user.getEmail());
-            return user;
         } else{
             userRepository.save(attributes.toEntity(registrationId));
 
             User loginUser = userRepository.findByKakaoId(attributes.getKakaoId());
-            System.out.println("로그인 유저: " + loginUser.getNickname() + ", " + loginUser.getEmail()+ ", " + loginUser.getKakaoId());
-            return loginUser;
-        }
-
-    }
-
-    public Object loadUserPostman(Map<String,Object> attribute) {
-        OAuthAttributesDTO attributes = OAuthAttributesDTO.ofPostman(attribute);
-        User user = saveOrUpdatePostman(attributes);
-
-        httpSession.setAttribute("user",new SessionUserDTO(user));
-        return httpSession.getAttribute("user");
-    }
-
-    private User saveOrUpdatePostman(OAuthAttributesDTO attributes){
-        User user = userRepository.findByKakaoId(attributes.getKakaoId());
-        if(user!=null){
-            System.out.println("로그인 유저: " + user.getNickname() + ", " + user.getEmail());
-            return user;
-        } else{
-            userRepository.save(attributes.toEntityPostman());
-
-            User loginUser = userRepository.findByKakaoId(attributes.getKakaoId());
-            System.out.println("로그인 유저: " + loginUser.getNickname() + ", " + loginUser.getEmail()+ ", " + loginUser.getKakaoId());
-            return loginUser;
+            System.out.println("회원가입 유저: " + loginUser.getNickname() + ", " + loginUser.getEmail()+ ", " + loginUser.getKakaoId());
         }
 
     }

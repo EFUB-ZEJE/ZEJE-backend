@@ -1,6 +1,5 @@
 package ewha.efub.zeje.util;
 
-import ewha.efub.zeje.config.LoginUser;
 import ewha.efub.zeje.dto.security.SessionUserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
