@@ -35,16 +35,6 @@ import java.net.URL;
 public class SpotService {
     private final SpotRepository spotRepository;
     private final ModelMapper modelMapper = new ModelMapper();
-    private final ModelMapper modelMapperSearch = new ModelMapper();
-
-    @Bean
-    public ModelMapper setSearchMapper() {
-        modelMapperSearch.typeMap(Spot.class, SpotDTO.class).addMappings(mapper -> {
-            mapper.skip(SpotDTO::setDescription);
-            mapper.skip(SpotDTO::setLink);
-        });
-        return modelMapperSearch;
-    }
 
     public List<SpotDTO> findAllSpots(String category) {
         return spotRepository.findByCategory(category)
