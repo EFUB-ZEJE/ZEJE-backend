@@ -39,7 +39,6 @@ public class SecurityConfig{
 
                 .and()
                 .logout()
-
                 .and()
                 .oauth2Login() //OAuth2 로그인 기능 설정
                 .successHandler(successHandler)

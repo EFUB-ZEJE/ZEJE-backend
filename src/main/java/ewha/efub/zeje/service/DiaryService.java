@@ -6,6 +6,8 @@ import ewha.efub.zeje.domain.MemoryRepository;
 import ewha.efub.zeje.domain.UserRepository;
 import ewha.efub.zeje.dto.diary.DiaryRequestDTO;
 import ewha.efub.zeje.dto.diary.DiaryResponseDTO;
+import ewha.efub.zeje.util.errors.CustomException;
+import ewha.efub.zeje.util.errors.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,8 @@ public class DiaryService {
 
         Diary diary = Diary.builder()
                 .name(diaryRequestDTO.getName())
-                .user(userRepository.findById(userId).get())
+                .user(userRepository.findById(userId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)))
                 .description(diaryRequestDTO.getDescription())
                 .build();
         diaryRepository.save(diary);
@@ -48,9 +51,8 @@ public class DiaryService {
 
     @Transactional
     public String modifyDiaryName(Long userId, Long diaryId, String name){
-        Optional<Diary> diaryOptional = diaryRepository.findByUser_userIdAndDiaryId(userId, diaryId);
-        Diary diary = diaryOptional.get();
-        if(diary == null) return "유효하지 않은 다이어리입니다.";
+        Diary diary = diaryRepository.findByUser_userIdAndDiaryId(userId, diaryId)
+                .orElseThrow(() -> new CustomException(ErrorCode.DIARY_NOT_FOUND));
 
         diary.updateName(name);
         return diary.getDiaryId().toString();
@@ -58,11 +60,10 @@ public class DiaryService {
 
     @Transactional
     public String removeDiary(Long userId, Long diaryId){
-        if(diaryRepository.existsByUser_UserIdAndDiaryId(userId, diaryId)){
-            diaryRepository.deleteById(diaryId);
-            return diaryId.toString()+"번 다이어리 삭제 완료";
-        } else {
-            return "유효하지 않은 다이어리입니다.";
-        }
+        Diary diary = diaryRepository.findByUser_userIdAndDiaryId(userId, diaryId)
+                .orElseThrow(() -> new CustomException(ErrorCode.DIARY_NOT_FOUND));
+        diaryRepository.deleteById(diaryId);
+
+        return diaryId.toString()+"번 다이어리 삭제 완료";
     }
 }

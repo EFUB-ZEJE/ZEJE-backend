@@ -25,67 +25,58 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO findUser(Long userId) {
-        User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
+        User user = getUserEntity(userId);
         return new UserResponseDTO(user);
     }
 
     @Transactional
     public UserFruitResponseDTO findFruitBox(Long userId) {
-        User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
+        User user = getUserEntity(userId);
         return new UserFruitResponseDTO(user);
     }
 
     @Transactional
     public UserFruitResponseDTO modifyFruitBoxAdd(Long userId, FruitRequestDTO fruitRequestDTO) {
-        User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
+        User user = getUserEntity(userId);
         user.updateFruitBox(true, fruitRequestDTO.getFruitBox());
         return new UserFruitResponseDTO(user);
     }
 
     @Transactional
     public UserFruitResponseDTO modifyFruitBoxSub(Long userId, FruitRequestDTO fruitRequestDTO) {
-        User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
+        User user = getUserEntity(userId);
         user.updateFruitBox(false, fruitRequestDTO.getFruitBox());
         return new UserFruitResponseDTO(user);
     }
 
     @Transactional
     public boolean removeUser(Long userId) {
-
-        try{
-            User user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
-            user.deleteUser();
-            return true;
-        }
-        catch(Exception e) {
-            return false;
-        }
+        User user = getUserEntity(userId);
+        user.deleteUser();
+        return true;
     }
 
     @Transactional
     public UserResponseDTO updateProfile(Long userId,  String nickname, MultipartFile file) throws IOException {
-        User entity = userRepository.findByUserIdAndDeleteFlagFalse(userId);
+        User entity = getUserEntity(userId);
 
         if(file!=null) {
             String currProfile = entity.getProfileUrl();
             String newProfile = imageUploadService.uploadImage(currProfile, file);
-
-            if(newProfile.equals("type error")) {
-                return null;
-            }
-            else if(newProfile.equals("null error")) {
-                return null;
-            }
-            else {
-                entity.updateProfile(newProfile);
-            }
+            entity.updateProfile(newProfile);
         }
-
         if(nickname!=null) {
             if(!nickname.isBlank()) entity.updateNickname(nickname);
         }
-
         return new UserResponseDTO(entity);
+    }
+
+    public User getUserEntity(Long userId) {
+        try{
+            return userRepository.findByUserIdAndDeleteFlagFalse(userId);
+        }catch(Exception e) {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
     }
 
 }
