@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
@@ -33,11 +34,12 @@ public class SecurityConfig{
                 .headers().frameOptions().disable().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
-                .authorizeRequests() //url별 권한 관리 설정
-                .antMatchers("/","/css/**","/images/**","/js/**","/profile").permitAll()
-                .anyRequest().authenticated() // 나머지들은, 로그인한 사람들만
+                .authorizeRequests(authorize -> authorize
+                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                        .antMatchers("**/oauth2/**", "/kakaologin", "/","/css/**","/images/**","/js/**","/profile").permitAll()
+                        .anyRequest().authenticated() // 나머지들은, 로그인한 사람들만
+                )
 
-                .and()
                 .logout()
                 .and()
                 .oauth2Login() //OAuth2 로그인 기능 설정
