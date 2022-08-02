@@ -3,6 +3,8 @@ package ewha.efub.zeje.controller;
 import ewha.efub.zeje.domain.Review;
 import ewha.efub.zeje.dto.ReviewRequestDTO;
 import ewha.efub.zeje.dto.ReviewResponseDTO;
+import ewha.efub.zeje.dto.security.SessionUserDTO;
+import ewha.efub.zeje.service.JwtTokenProvider;
 import ewha.efub.zeje.service.ReviewService;
 import ewha.efub.zeje.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
@@ -19,14 +22,16 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
     private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ReviewResponseDTO reviewSave(@RequestParam(value = "image", required = false) MultipartFile image,
                                         @RequestParam(value = "spotId") Long spotId, @RequestParam(value = "score") Integer score,
-                                        @RequestParam(value = "content") String content) throws IOException {
+                                        @RequestParam(value = "content") String content,
+                                        HttpServletRequest request) throws IOException {
 
-        Long userId = userService.findSessionUser();
+        Long userId = jwtTokenProvider.getUserInfoByToken(request).getUserId();
         ReviewRequestDTO reviewRequestDTO = ReviewRequestDTO.builder()
                 .userId(userId)
                 .spotId(spotId)

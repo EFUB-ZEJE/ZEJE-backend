@@ -22,19 +22,6 @@ import static ewha.efub.zeje.dto.user.UserResponseDTO.*;
 public class UserService {
     private final UserRepository userRepository;
     private final ImageUploadService imageUploadService;
-    private final HttpSession httpSession;
-
-    @Transactional
-    public Long findSessionUser() {
-        SessionUserDTO user = (SessionUserDTO) httpSession.getAttribute("user");
-        if(user != null) {
-            Long userId = user.getUserId();
-            return userId;
-        }
-        else {
-            throw new CustomException(ErrorCode.INVALID_SESSION_USER);
-        }
-    }
 
     @Transactional
     public UserResponseDTO findUser(Long userId) {
