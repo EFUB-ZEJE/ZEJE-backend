@@ -35,28 +35,18 @@ import java.net.URL;
 public class SpotService {
     private final SpotRepository spotRepository;
     private final ModelMapper modelMapper = new ModelMapper();
-    private final ModelMapper modelMapperSearch = new ModelMapper();
-
-    @Bean
-    public ModelMapper setSearchMapper() {
-        modelMapperSearch.typeMap(Spot.class, SpotDTO.class).addMappings(mapper -> {
-            mapper.skip(SpotDTO::setDescription);
-            mapper.skip(SpotDTO::setLink);
-        });
-        return modelMapperSearch;
-    }
 
     public List<SpotDTO> findAllSpots(String category) {
         return spotRepository.findByCategory(category)
                 .stream()
-                .map(spot -> modelMapperSearch.map(spot, SpotDTO.class))
+                .map(spot -> new SpotDTO(spot))
                 .collect(Collectors.toList());
     }
 
     public List<SpotDTO> findSpotsByKeyword(String category, String keyword) {
         return spotRepository.findByCategoryAndNameContaining(category, keyword)
                 .stream()
-                .map(spot -> modelMapperSearch.map(spot, SpotDTO.class))
+                .map(spot -> new SpotDTO(spot))
                 .collect(Collectors.toList());
     }
 
@@ -69,21 +59,20 @@ public class SpotService {
     }
 
     public List<SpotDTO> findFlowerSpot() {
-        long count = spotRepository.countByContentIdIsNotAndCategoryEquals(0L, "여행");
+        long count = spotRepository.countByContentIdIsNotAndCategoryEqualsAndMapXIsNotNull(0L, "여행");
         int random = (int) (Math.random() * count / 10);
         int index = random == 0? random : random - 1;
 
-        Page<Spot> spotPage = spotRepository.findAllByContentIdIsNotAndCategoryEquals(0L, "여행", PageRequest.of(index, 10));
+        Page<Spot> spotPage = spotRepository.findAllByContentIdIsNotAndCategoryEqualsAndMapXIsNotNull(0L, "여행", PageRequest.of(index, 10));
 
         List<Spot> spotList = spotPage.toList();
         return spotList.stream()
-                .map(spot -> modelMapperSearch.map(spot, SpotDTO.class))
+                .map(spot -> new SpotDTO(spot))
                 .collect(Collectors.toList());
     }
 
     @Value("${api.serviceKey}")
     private String serviceKey;
-
     public Integer addSpotApi(String cat1, String cat2, String cat3) {
 
         String type = selectType(cat1, cat2, cat3);
