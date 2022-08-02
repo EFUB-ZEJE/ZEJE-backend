@@ -7,6 +7,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import ewha.efub.zeje.util.errors.CustomException;
+import ewha.efub.zeje.util.errors.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -69,20 +71,16 @@ public class ImageUploadService {
     }
 
     public String uploadImage(int directory, MultipartFile file) throws IOException {
-        boolean fileTypeFlag = true;
-
-        if(file!=null){
-            fileTypeFlag = checkContentType(file);
-
-            if(fileTypeFlag == true) {
-                String fileName = uploadS3(directory, file);
-                return makeFileUrl(directory, fileName);
-            }
-            else {
-                return "type error";
-            }
+        if(file == null) {
+            throw new CustomException(ErrorCode.INVALID_IMAGE_FILE);
         }
-        return "null error";
+
+        if(!checkContentType(file)) {
+            throw new CustomException(ErrorCode.INVALID_IMAGE_FILE);
+        }
+
+        String fileName = uploadS3(directory, file);
+        return makeFileUrl(directory, fileName);
     }
 
 

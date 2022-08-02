@@ -2,6 +2,8 @@ package ewha.efub.zeje.util;
 
 import ewha.efub.zeje.config.LoginUser;
 import ewha.efub.zeje.dto.security.SessionUserDTO;
+import ewha.efub.zeje.util.errors.CustomException;
+import ewha.efub.zeje.util.errors.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -29,7 +31,11 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
     public Object resolveArgument(MethodParameter parameter,
                                   ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest,
-                                  WebDataBinderFactory binderFactory) throws Exception {
-        return httpSession.getAttribute("user"); // 세션에서 객체 가져옴
+                                  WebDataBinderFactory binderFactory) {
+        Object object = httpSession.getAttribute("user"); // 세션에서 객체 가져옴
+        if(object == null) {
+            throw new CustomException(ErrorCode.USER_UNAUTHORIZED);
+        }
+        else return object;
     }
 }
