@@ -29,6 +29,8 @@ public enum ErrorCode {
     SPOT_NOT_FOUND(NOT_FOUND, "해당 스팟 정보를 찾을 수 없습니다."),
     DIARY_NOT_FOUND(NOT_FOUND, "해당 다이어리 정보를 찾을 수 없습니다."),
     MEMORY_NOT_FOUND(NOT_FOUND, "해당 일기 정보를 찾을 수 없습니다."),
+    WISH_NOT_FOUND(NOT_FOUND, "해당 위시리스트 정보를 찾을 수 없습니다."),
+
 
     //500 INTERNAL_SERVER_ERROR : 서버 내 문제
     EXCEPTION(INTERNAL_SERVER_ERROR, "서버 내에 알 수 없는 오류가 발생했습니다."),
