@@ -27,9 +27,11 @@ public class SpotDTO {
     private String location;
     private String description;
     private String link;
+    private String mapX;
+    private String mapY;
 
     @Builder
-    public SpotDTO(Long contentId, String category, String type, String name, String location, String description, String link) {
+    public SpotDTO(Long contentId, String category, String type, String name, String location, String description, String link, String mapX, String mapY) {
         this.contentId = contentId;
         this.category = category;
         this.type = type;
@@ -37,6 +39,8 @@ public class SpotDTO {
         this.location = location;
         this.description = description;
         this.link = link;
+        this.mapX = mapX;
+        this.mapY = mapY;
     }
 
     public SpotDTO(Spot spot) {
@@ -48,6 +52,8 @@ public class SpotDTO {
         this.location = spot.getLocation();
         this.description = spot.getDescription();
         this.link = spot.getLink();
+        this.mapX = spot.getMapX();
+        this.mapY = spot.getMapY();
     }
 
     public Spot toEntity() {
@@ -59,6 +65,8 @@ public class SpotDTO {
                 .location(location)
                 .description(description)
                 .link(link)
+                .mapX(mapX)
+                .mapY(mapY)
                 .build();
     }
 }

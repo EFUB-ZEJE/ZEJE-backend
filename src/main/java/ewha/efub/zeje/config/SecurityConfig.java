@@ -25,7 +25,7 @@ public class SecurityConfig{
                 .anyRequest().permitAll() // 나머지들은, 로그인한 사람들만
                 .and()
                 .logout()
-                .logoutSuccessUrl("/") //로그아웃 성공시 여기로 이동
+                .logoutSuccessUrl("/main") //로그아웃 성공시 여기로 이동
                 .and()
                 .oauth2Login() //OAuth2 로그인 기능 설정
                 .defaultSuccessUrl("/main")

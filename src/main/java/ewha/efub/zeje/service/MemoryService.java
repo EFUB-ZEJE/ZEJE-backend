@@ -32,9 +32,6 @@ public class MemoryService {
 
         if(file!=null) {
             String fileUrl = imageUploadService.uploadImage(1, file);
-            if(fileUrl.equals("type error")) return null;
-            else if(fileUrl.equals("null error")) return null;
-
             return new MemoryResponseDTO(saveMemory(requestDTO, fileUrl, diary));
         }
         else {
@@ -44,18 +41,14 @@ public class MemoryService {
 
     @Transactional
     public String deleteMemory(Long memoryId) {
-        try{
-            memoryRepository.deleteById(memoryId);
-            return memoryId.toString() + "번 일기 삭제 완료";
-        } catch (Exception e) {
-            return e.toString();
-        }
+        Memory memory = findMemoryEntity(memoryId);
+        memoryRepository.deleteById(memoryId);
+        return memoryId.toString() + "번 일기 삭제 완료";
     }
 
     @Transactional
     public MemoryResponseDTO modifyMemory(Long memoryId, MemoryRequestDTO requestDTO) {
-        Memory memory = memoryRepository.findMemoryByMemoryId(memoryId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMORY_NOT_FOUND));
+        Memory memory = findMemoryEntity(memoryId);
 
         if(requestDTO.getTitle()!=null) {
             memory.updateTitle(requestDTO.getTitle());
@@ -68,8 +61,7 @@ public class MemoryService {
 
     @Transactional
     public MemoryResponseDTO findMemory(Long memoryId) {
-        Memory memory = memoryRepository.findMemoryByMemoryId(memoryId)
-                .orElseThrow(()-> new CustomException(ErrorCode.MEMORY_NOT_FOUND));
+        Memory memory = findMemoryEntity(memoryId);
 
         return new MemoryResponseDTO(memory);
     }
@@ -115,5 +107,11 @@ public class MemoryService {
 
     public Boolean checkDiary(Long diaryId, Long memoryId) {
         return memoryRepository.existsMemoryByDiary_DiaryIdAndMemoryId(diaryId, memoryId);
+    }
+
+    public Memory findMemoryEntity(Long memoryId) {
+        Memory memory = memoryRepository.findMemoryByMemoryId(memoryId)
+                .orElseThrow(()-> new CustomException(ErrorCode.MEMORY_NOT_FOUND));
+        return memory;
     }
 }
