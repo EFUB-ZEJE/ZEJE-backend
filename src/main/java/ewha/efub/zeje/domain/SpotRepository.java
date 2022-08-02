@@ -14,6 +14,6 @@ public interface SpotRepository extends JpaRepository<Spot, Long> {
     List<Spot> findByCategory(String category);
     List<Spot> findByCategoryAndNameContaining(String category, String name);
     Optional<Spot> findByContentId(Long contentId);
-    Page<Spot> findAllByContentIdIsNotAndCategoryEquals(Long contentId, String category, Pageable pageable);
-    Long countByContentIdIsNotAndCategoryEquals(Long contentId, String category);
+    Page<Spot> findAllByContentIdIsNotAndCategoryEqualsAndMapXIsNotNull(Long contentId, String category, Pageable pageable);
+    Long countByContentIdIsNotAndCategoryEqualsAndMapXIsNotNull(Long contentId, String category);
 }
