@@ -1,8 +1,6 @@
 package ewha.efub.zeje.service;
 
-import ewha.efub.zeje.domain.Spot;
-import ewha.efub.zeje.domain.SpotRepository;
-import ewha.efub.zeje.domain.SpotType;
+import ewha.efub.zeje.domain.*;
 import ewha.efub.zeje.dto.SpotDTO;
 import ewha.efub.zeje.util.errors.CustomException;
 import ewha.efub.zeje.util.errors.ErrorCode;
@@ -34,6 +32,8 @@ import java.net.URL;
 @RequiredArgsConstructor
 public class SpotService {
     private final SpotRepository spotRepository;
+    private final UserRepository userRepository;
+    private final SpotUserRepository spotUserRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
     public List<SpotDTO> findAllSpots(String category) {
@@ -59,6 +59,7 @@ public class SpotService {
     }
 
     public List<SpotDTO> findFlowerSpot() {
+        spotUserRepository.deleteAll();
         long count = spotRepository.countByContentIdIsNotAndCategoryEqualsAndMapXIsNotNull(0L, "여행");
         int random = (int) (Math.random() * count / 10);
         int index = random == 0? random : random - 1;
@@ -69,6 +70,33 @@ public class SpotService {
         return spotList.stream()
                 .map(spot -> new SpotDTO(spot))
                 .collect(Collectors.toList());
+    }
+
+    public Boolean findFlowerVisit(Long userId, Long spotId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        Spot spot = spotRepository.findById(spotId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SPOT_NOT_FOUND));
+
+        return spotUserRepository.existsBySpotAndUser(spot, user);
+    }
+
+    public String updateFlowerVisit(Long userId, Long spotId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        Spot spot = spotRepository.findById(spotId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SPOT_NOT_FOUND));
+
+        SpotUser spotUser = SpotUser.builder()
+                .spot(spot)
+                .user(user)
+                .build();
+
+        spotUserRepository.save(spotUser);
+
+        return "Successful Today Visit";
     }
 
     @Value("${api.serviceKey}")
