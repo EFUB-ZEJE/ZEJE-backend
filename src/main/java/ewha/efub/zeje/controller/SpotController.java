@@ -2,8 +2,10 @@ package ewha.efub.zeje.controller;
 
 import ewha.efub.zeje.domain.SpotRepository;
 import ewha.efub.zeje.dto.SpotDTO;
+import ewha.efub.zeje.dto.security.SessionUserDTO;
 import ewha.efub.zeje.service.SpotService;
 import lombok.RequiredArgsConstructor;
+import ewha.efub.zeje.service.JwtTokenProvider;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -19,8 +22,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping(value="/spots")
 public class SpotController {
-    private final SpotRepository spotRepository;
     private final SpotService spotService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping(value="/search/travel")
     public List<SpotDTO> spotTravelList(){
@@ -62,6 +65,19 @@ public class SpotController {
     @GetMapping("/flowers")
     public List<SpotDTO> spotFlowerList() {
         return spotService.findFlowerSpot();
+    }
+
+    @GetMapping("/flowers/today-visit")
+    public Boolean spotFlowerVisited(HttpServletRequest request, @RequestParam("spot") Long spotId) {
+        SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(request);
+        return spotService.findFlowerVisit(sessionUser.getUserId(), spotId);
+    }
+
+    @PostMapping("/flowers")
+    public String spotFlowerVisitUpdate(HttpServletRequest request, @RequestBody Map<String, Long> body) {
+        SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(request);
+        Long spotId = body.get("spotId");
+        return spotService.updateFlowerVisit(sessionUser.getUserId(), spotId);
     }
 }
 
