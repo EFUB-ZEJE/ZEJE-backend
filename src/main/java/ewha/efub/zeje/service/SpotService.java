@@ -89,6 +89,11 @@ public class SpotService {
         Spot spot = spotRepository.findById(spotId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SPOT_NOT_FOUND));
 
+        Boolean flag = findFlowerVisit(userId, spotId);
+        if(flag) {
+            throw new CustomException(ErrorCode.DUPLICATE_INFORMATION);
+        }
+
         SpotUser spotUser = SpotUser.builder()
                 .spot(spot)
                 .user(user)

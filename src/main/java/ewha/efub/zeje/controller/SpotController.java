@@ -74,8 +74,9 @@ public class SpotController {
     }
 
     @PostMapping("/flowers")
-    public String spotFlowerVisitUpdate(HttpServletRequest request, @RequestParam("spot") Long spotId) {
+    public String spotFlowerVisitUpdate(HttpServletRequest request, @RequestBody Map<String, Long> body) {
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(request);
+        Long spotId = body.get("spotId");
         return spotService.updateFlowerVisit(sessionUser.getUserId(), spotId);
     }
 }
