@@ -21,7 +21,6 @@ import java.util.List;
 @RequestMapping("/reviews")
 public class ReviewController {
     private final ReviewService reviewService;
-    private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping
@@ -60,5 +59,11 @@ public class ReviewController {
     @DeleteMapping("/{reviewId}")
     public String reviewDelete(@PathVariable Long reviewId) {
         return reviewService.deleteReview(reviewId);
+    }
+
+    @GetMapping("/my-review")
+    public List<ReviewResponseDTO> myReviewList(HttpServletRequest request) {
+        SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(request);
+        return reviewService.findAllMyReview(sessionUser.getUserId());
     }
 }

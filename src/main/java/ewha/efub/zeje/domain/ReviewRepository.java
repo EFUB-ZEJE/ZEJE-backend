@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     public List<Review> findAllBySpot(Spot spot);
+    public List<Review> findAllByUser(User user);
 }
