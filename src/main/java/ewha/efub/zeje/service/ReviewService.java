@@ -96,4 +96,14 @@ public class ReviewService {
         reviewRepository.delete(review);
         return "SUCCESS";
     }
+
+    public List<ReviewResponseDTO> findAllMyReview(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        return reviewRepository.findAllByUser(user)
+                .stream()
+                .map(review -> new ReviewResponseDTO(review))
+                .collect(Collectors.toList());
+    }
 }
