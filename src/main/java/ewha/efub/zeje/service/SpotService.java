@@ -131,7 +131,7 @@ public class SpotService {
             String location = (String) item.get("addr1");
 
             String detailApiUrl = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailCommon?ServiceKey="+ serviceKey + "&contentTypeId=12&contentId="+ contentId
-                    + "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&defaultYN=Y&firstImageYN=Y&areacodeYN=Y&catcodeYN=Y&addrinfoYN=Y&mapinfoYN=Y&overviewYN=Y&transGuideYN=Y";
+                    + "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&defaultYN=Y&firstImageYN=Y&areacodeYN=Y&catcodeYN=Y&addrinfoYN=Y&mapinfoYN=Y&overviewYN=Y";
             JSONObject parseDetailItems = readTourApi(detailApiUrl);
             JSONObject parseDetailItem = (JSONObject) parseDetailItems.get("item");
 
@@ -141,7 +141,9 @@ public class SpotService {
             String mapX = parseDetailItem.has("mapx")? String.valueOf(parseDetailItem.get("mapx")) : null;
             String mapY = parseDetailItem.has("mapy")? String.valueOf(parseDetailItem.get("mapy")) : null;
 
-            SpotDTO spotDTO = new SpotDTO(contentId, category, type, name, location, description, link, mapX, mapY);
+            String image = parseDetailItem.has("firstimage")? String.valueOf(parseDetailItem.get("firstimage")) : null;
+
+            SpotDTO spotDTO = new SpotDTO(contentId, category, type, name, location, description, link, mapX, mapY, image);
             Spot spot = spotDTO.toEntity();
             spotRepository.save(spot);
         }

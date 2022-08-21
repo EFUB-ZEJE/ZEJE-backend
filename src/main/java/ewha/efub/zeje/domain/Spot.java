@@ -47,8 +47,11 @@ public class Spot {
     @Column(name = "map_y", length = 45)
     private String mapY;
 
+    @Column(length = 500)
+    private String image;
+
     @Builder
-    public Spot(Long contentId, String category, String type, String name, String location, String description, String link, String mapX, String mapY) {
+    public Spot(Long contentId, String category, String type, String name, String location, String description, String link, String mapX, String mapY, String image) {
         this.contentId = contentId;
         this.category = category;
         this.type = type;
@@ -58,6 +61,7 @@ public class Spot {
         this.link = link;
         this.mapX = mapX;
         this.mapY = mapY;
+        this.image = image;
     }
 }
 
