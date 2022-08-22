@@ -19,10 +19,11 @@ public class SpotUserResponseDTO {
     private String link;
     private String mapX;
     private String mapY;
+    private String image;
     private Boolean todayVisit;
 
     @Builder
-    public SpotUserResponseDTO(Long contentId, String category, String type, String name, String location, String description, String link, String mapX, String mapY, Boolean todayVisit) {
+    public SpotUserResponseDTO(Long contentId, String category, String type, String name, String location, String description, String link, String mapX, String mapY, String image, Boolean todayVisit) {
         this.contentId = contentId;
         this.category = category;
         this.type = type;
@@ -32,6 +33,7 @@ public class SpotUserResponseDTO {
         this.link = link;
         this.mapX = mapX;
         this.mapY = mapY;
+        this.image = image;
         this.todayVisit = todayVisit;
     }
 
