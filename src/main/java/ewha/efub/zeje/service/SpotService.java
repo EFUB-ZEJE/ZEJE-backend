@@ -5,12 +5,14 @@ import ewha.efub.zeje.dto.SpotDTO;
 import ewha.efub.zeje.util.errors.CustomException;
 import ewha.efub.zeje.util.errors.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
-import org.json.simple.parser.JSONParser;
+import org.json.JSONTokener;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -28,6 +30,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SpotService {
@@ -106,7 +109,7 @@ public class SpotService {
 
     @Value("${api.serviceKey}")
     private String serviceKey;
-    public Integer addSpotApi(String cat1, String cat2, String cat3) {
+    public String addSpotApi(String cat1, String cat2, String cat3) {
 
         String type = selectType(cat1, cat2, cat3);
 
@@ -114,9 +117,17 @@ public class SpotService {
                 + "&contentTypeId=12&areaCode=39&sigunguCode=&cat1=" + cat1 + "&cat2=" + cat2 + "&cat3=" + cat3 + "&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=300&pageNo=1";
 
         JSONObject parseItems = readTourApi(listApiUrl);
-        JSONArray parseItemList = (JSONArray) parseItems.get("item");
+        JSONArray parseItemList = new JSONArray();
+        if(parseItems.get("item") instanceof JSONObject) {
+            JSONObject item = parseItems.getJSONObject("item");
+            parseItemList.put(item);
+        }
+        else if (parseItems.get("item") instanceof JSONArray) {
+            parseItemList = parseItems.getJSONArray("item");
+        }
 
         int notSaved = 0;
+        System.out.println(parseItemList.toString());
         for(int i=0;i<parseItemList.length();i++) {
             JSONObject item = (JSONObject) parseItemList.get(i);
 
@@ -149,7 +160,10 @@ public class SpotService {
         }
 
         Integer count = parseItemList.length() - notSaved;
-        return count;
+        String message = count + " Saved";
+
+
+        return message;
     }
 
 
@@ -172,6 +186,7 @@ public class SpotService {
 
             JSONObject parseResponse = (JSONObject) jsonObject.get("response");
             JSONObject parseBody = (JSONObject) parseResponse.get("body");
+
             parseItems = (JSONObject) parseBody.get("items");
 
         } catch (Exception e) {
@@ -200,6 +215,17 @@ public class SpotService {
         }
 
         return typeBuilder.toString();
+    }
+
+    @Scheduled(cron = "59 59 23 * * *")
+    private void runApi() {
+        log.info(addSpotApi("A01", "", ""));
+        log.info(addSpotApi("A02", "A0202", "A02020700"));
+        log.info(addSpotApi("A02", "A0202", "A02020600"));
+        log.info(addSpotApi("A02", "A0202", "A02020200"));
+        log.info(addSpotApi("A02", "A0203", "A02030400"));
+        log.info(addSpotApi("A02", "A0203", "A02030100"));
+        log.info(addSpotApi("A02", "A0203", "A02030600"));
     }
 }
 

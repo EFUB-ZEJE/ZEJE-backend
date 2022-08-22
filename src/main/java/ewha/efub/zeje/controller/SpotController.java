@@ -50,18 +50,6 @@ public class SpotController {
         return spotService.findSpotDetail(spotId);
     }
 
-    @PostMapping("/tourapi")
-    public String spotApiSave(@RequestBody Map<String, String> body) {
-        String cat1 = body.get("cat1");
-        String cat2 = body.get("cat2");
-        String cat3 = body.get("cat3");
-
-        Integer count = spotService.addSpotApi(cat1, cat2, cat3);
-        String message = count + " Saved";
-
-        return message;
-    }
-
     @GetMapping("/flowers")
     public List<SpotDTO> spotFlowerList() {
         return spotService.findFlowerSpot();
