@@ -22,9 +22,7 @@ import java.util.Arrays;
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig{
-    private final OAuthUserService oAuthUserService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationSuccessHandler successHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -36,16 +34,9 @@ public class SecurityConfig{
 
                 .authorizeRequests(authorize -> authorize
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                        .antMatchers("**/oauth2/**", "/kakaologin", "/","/css/**","/images/**","/js/**","/profile").permitAll()
+                        .antMatchers("**/oauth2/**", "/users/login", "/","/css/**","/images/**","/js/**","/profile").permitAll()
                         .anyRequest().authenticated() // 나머지들은, 로그인한 사람들만
-                )
-
-                .logout()
-                .and()
-                .oauth2Login() //OAuth2 로그인 기능 설정
-                .successHandler(successHandler)
-                .userInfoEndpoint() //로그인 성공 이후 사용자 정보 가져올 때의 설정 담당
-                .userService(oAuthUserService);//UserService 인터페이스의 구현체
+                );
 
         return http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class).build();
     }
@@ -54,7 +45,7 @@ public class SecurityConfig{
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "http://localhost:63342"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "https://kapi.kakao.com"));
         configuration.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
 
