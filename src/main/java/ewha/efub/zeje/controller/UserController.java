@@ -25,7 +25,7 @@ public class UserController {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public String userSave(@RequestBody KakaoProfile kakaoProfile) {
         User user = userService.saveUser(kakaoProfile);
         String token = jwtTokenProvider.createJwtAccessToken(user.getKakaoId().toString(), user.getNickname());
