@@ -36,59 +36,14 @@ public class UserService {
     private final ImageUploadService imageUploadService;
 
     @Transactional
-    public User saveUser(String kakaoToken) {
-        KakaoProfile profile = findProfile(kakaoToken);
-
-        User user = userRepository.findByKakaoId(profile.getId());
+    public User saveUser(KakaoProfile kakaoProfile) {
+        User user = userRepository.findByKakaoId(kakaoProfile.getId());
 
         if(user == null) {
-            user = User.builder()
-                    .kakaoId(profile.getId())
-                    .profileUrl(profile.getKakao_account().getProfile().getProfile_image_url())
-                    .email(profile.getKakao_account().getEmail())
-                    .nickname(profile.getKakao_account().getProfile().getNickname())
-                    .build();
+            user = kakaoProfile.toEntity();
             userRepository.save(user);
         }
         return user;
-    }
-
-    public KakaoProfile findProfile(String token) {
-
-        //(1-6)
-        // Http 요청 (POST 방식) 후, response 변수에 응답을 받음
-        try{
-            RestTemplate rt = new RestTemplate();
-
-            //(1-3)
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", token); //(1-4)
-            headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
-            //(1-5)
-            HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest =
-                    new HttpEntity<>(headers);
-
-            ResponseEntity<String> kakaoProfileResponse = rt.exchange(
-                    "https://kapi.kakao.com/v2/user/me",
-                    HttpMethod.POST,
-                    kakaoProfileRequest,
-                    String.class
-            );
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            KakaoProfile kakaoProfile = null;
-            try {
-                kakaoProfile = objectMapper.readValue(kakaoProfileResponse.getBody(), KakaoProfile.class);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-
-            return kakaoProfile;
-        }catch(Exception e){
-            log.error(e.getMessage());
-        }
-        return null;
     }
 
     public UserResponseDTO findUser(Long userId) {

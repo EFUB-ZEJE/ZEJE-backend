@@ -3,6 +3,7 @@ package ewha.efub.zeje.controller;
 import ewha.efub.zeje.domain.User;
 import ewha.efub.zeje.dto.FruitRequestDTO;
 import ewha.efub.zeje.dto.security.SessionUserDTO;
+import ewha.efub.zeje.dto.user.KakaoProfile;
 import ewha.efub.zeje.dto.user.UserResponseDTO;
 import ewha.efub.zeje.service.JwtTokenProvider;
 import ewha.efub.zeje.service.OAuthUserService;
@@ -25,9 +26,8 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/login")
-    public String userSave(HttpServletRequest request) {
-        String kakaoToken = request.getHeader("Authorization");
-        User user = userService.saveUser(kakaoToken);
+    public String userSave(@RequestBody KakaoProfile kakaoProfile) {
+        User user = userService.saveUser(kakaoProfile);
         String token = jwtTokenProvider.createJwtAccessToken(user.getKakaoId().toString(), user.getNickname());
         return token;
     }
