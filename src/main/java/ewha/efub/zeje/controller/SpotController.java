@@ -6,6 +6,8 @@ import ewha.efub.zeje.dto.security.SessionUserDTO;
 import ewha.efub.zeje.service.SpotService;
 import lombok.RequiredArgsConstructor;
 import ewha.efub.zeje.service.JwtTokenProvider;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value="/spots")
@@ -50,9 +52,15 @@ public class SpotController {
         return spotService.findSpotDetail(spotId);
     }
 
-    @GetMapping("/flowers")
-    public List<SpotDTO> spotFlowerList() {
-        return spotService.findFlowerSpot();
+    @Scheduled(cron = "0 0 0 * * *")
+    @GetMapping("/newFlowers")
+    public void spotNewFlowerList() {
+        log.info(spotService.updateTodayFlowerSpot());
+    }
+
+    @GetMapping("/todayFlowers")
+    public List<SpotDTO> spotTodayFlowerList() {
+        return spotService.findTodayFlowerSpot();
     }
 
     @GetMapping("/flowers/today-visit")

@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import org.json.JSONObject;
 import org.json.XML;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -61,18 +62,32 @@ public class SpotService {
         return spotDTO;
     }
 
-    public List<SpotDTO> findFlowerSpot() {
+    public List<SpotDTO> findTodayFlowerSpot() {
+        return spotRepository.findAllByFlowerIsTrue()
+                .stream()
+                .map(spot -> new SpotDTO(spot))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public String updateTodayFlowerSpot() {
         spotUserRepository.deleteAll();
+        List<Spot> yesterdayFlower = spotRepository.findAllByFlowerIsTrue();
+        for(Spot spot : yesterdayFlower) {
+            spot.deleteFlowerSpot();
+        }
+
         long count = spotRepository.countByContentIdIsNotAndCategoryEqualsAndMapXIsNotNull(0L, "여행");
         int random = (int) (Math.random() * count / 10);
         int index = random == 0? random : random - 1;
 
         Page<Spot> spotPage = spotRepository.findAllByContentIdIsNotAndCategoryEqualsAndMapXIsNotNull(0L, "여행", PageRequest.of(index, 10));
 
-        List<Spot> spotList = spotPage.toList();
-        return spotList.stream()
-                .map(spot -> new SpotDTO(spot))
-                .collect(Collectors.toList());
+        for(Spot spot : spotPage) {
+            spot.updateFlowerSpot();
+        }
+
+        return "Successful Update";
     }
 
     public Boolean findFlowerVisit(Long userId, Long spotId) {
@@ -81,6 +96,10 @@ public class SpotService {
 
         Spot spot = spotRepository.findById(spotId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SPOT_NOT_FOUND));
+
+        if(!spot.getFlower()) {
+            throw new CustomException(ErrorCode.NOT_FLOWER_SPOT);
+        }
 
         return spotUserRepository.existsBySpotAndUser(spot, user);
     }
@@ -91,6 +110,10 @@ public class SpotService {
 
         Spot spot = spotRepository.findById(spotId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SPOT_NOT_FOUND));
+
+        if(!spot.getFlower()) {
+            throw new CustomException(ErrorCode.NOT_FLOWER_SPOT);
+        }
 
         Boolean flag = findFlowerVisit(userId, spotId);
         if(flag) {
@@ -127,7 +150,6 @@ public class SpotService {
         }
 
         int notSaved = 0;
-        System.out.println(parseItemList.toString());
         for(int i=0;i<parseItemList.length();i++) {
             JSONObject item = (JSONObject) parseItemList.get(i);
 
@@ -218,7 +240,7 @@ public class SpotService {
     }
 
     @Scheduled(cron = "59 59 23 * * *")
-    private void runApi() {
+    public void runApi() {
         log.info(addSpotApi("A01", "", ""));
         log.info(addSpotApi("A02", "A0202", "A02020700"));
         log.info(addSpotApi("A02", "A0202", "A02020600"));
@@ -227,6 +249,7 @@ public class SpotService {
         log.info(addSpotApi("A02", "A0203", "A02030100"));
         log.info(addSpotApi("A02", "A0203", "A02030600"));
     }
+
 }
 
 

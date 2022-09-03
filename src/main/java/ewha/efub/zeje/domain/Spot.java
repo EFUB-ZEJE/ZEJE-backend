@@ -50,6 +50,10 @@ public class Spot {
     @Column(length = 500)
     private String image;
 
+    @NotNull
+    @Column
+    private Boolean flower;
+
     @Builder
     public Spot(Long contentId, String category, String type, String name, String location, String description, String link, String mapX, String mapY, String image) {
         this.contentId = contentId;
@@ -62,6 +66,15 @@ public class Spot {
         this.mapX = mapX;
         this.mapY = mapY;
         this.image = image;
+        this.flower = false;
+    }
+
+    public void updateFlowerSpot() {
+        this.flower = true;
+    }
+
+    public void deleteFlowerSpot() {
+        this.flower = false;
     }
 }
 
