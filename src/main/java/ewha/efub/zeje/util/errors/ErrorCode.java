@@ -17,6 +17,7 @@ public enum ErrorCode {
     INVALID_IMAGE_FILE(BAD_REQUEST, "잘못된 이미지 파일입니다."),
     INVALID_SESSION_USER(BAD_REQUEST, "세션 유저가 비어있습니다."),
     DUPLICATE_INFORMATION(BAD_REQUEST, "이미 방문했습니다."),
+    NOT_FLOWER_SPOT(BAD_REQUEST, "꽃봉우리 스팟이 아닙니다."),
 
     //401 UNAUTHORIZED : 비인증 상태
     USER_UNAUTHORIZED(UNAUTHORIZED, "로그인이 필요합니다."),
