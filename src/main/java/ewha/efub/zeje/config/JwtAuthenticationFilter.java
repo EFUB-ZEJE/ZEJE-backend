@@ -2,6 +2,7 @@ package ewha.efub.zeje.config;
 
 import ewha.efub.zeje.service.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Slf4j
 @RequiredArgsConstructor
 class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
@@ -24,11 +26,11 @@ class JwtAuthenticationFilter extends OncePerRequestFilter {
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            System.out.println("INFO: token received");
-            System.out.println(SecurityContextHolder.getContext().getAuthentication());
+            log.info("INFO: token received");
+            log.info(String.valueOf(SecurityContextHolder.getContext().getAuthentication()));
         }
         else {
-            System.out.println("ERROR: invalid token");
+            log.info("ERROR: invalid token");
         }
         filterChain.doFilter(request, response); // 필터 작동
     }
