@@ -43,6 +43,10 @@ public class UserService {
             user = kakaoProfile.toEntity();
             userRepository.save(user);
         }
+
+        if(user.getDeleteFlag()) {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
         return user;
     }
 
@@ -93,11 +97,12 @@ public class UserService {
     }
 
     public User getUserEntity(Long userId) {
-        try{
-            return userRepository.findByUserIdAndDeleteFlagFalse(userId);
-        }catch(Exception e) {
+        User user;
+        user = userRepository.findByUserIdAndDeleteFlagFalse(userId);
+        if(user == null) {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
+        return user;
     }
 
 }
