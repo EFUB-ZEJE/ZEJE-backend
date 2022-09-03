@@ -16,4 +16,5 @@ public interface SpotRepository extends JpaRepository<Spot, Long> {
     Optional<Spot> findByContentId(Long contentId);
     Page<Spot> findAllByContentIdIsNotAndCategoryEqualsAndMapXIsNotNull(Long contentId, String category, Pageable pageable);
     Long countByContentIdIsNotAndCategoryEqualsAndMapXIsNotNull(Long contentId, String category);
+    List<Spot> findAllByFlowerIsTrue();
 }
