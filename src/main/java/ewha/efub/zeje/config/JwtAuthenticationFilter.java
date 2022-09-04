@@ -30,7 +30,7 @@ class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.info(String.valueOf(SecurityContextHolder.getContext().getAuthentication()));
         }
         else {
-            log.info("ERROR: invalid token");
+            log.info(String.valueOf(request.getRequestURL()));
         }
         filterChain.doFilter(request, response); // 필터 작동
     }
