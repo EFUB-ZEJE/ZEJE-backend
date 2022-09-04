@@ -29,9 +29,6 @@ class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.info("INFO: token received");
             log.info(String.valueOf(SecurityContextHolder.getContext().getAuthentication()));
         }
-        else {
-            log.info(String.valueOf(request.getRequestURL()));
-        }
         filterChain.doFilter(request, response); // 필터 작동
     }
 }

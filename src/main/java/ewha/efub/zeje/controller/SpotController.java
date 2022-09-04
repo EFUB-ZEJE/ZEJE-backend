@@ -2,6 +2,7 @@ package ewha.efub.zeje.controller;
 
 import ewha.efub.zeje.domain.SpotRepository;
 import ewha.efub.zeje.dto.SpotDTO;
+import ewha.efub.zeje.dto.SpotUserResponseDTO;
 import ewha.efub.zeje.dto.security.SessionUserDTO;
 import ewha.efub.zeje.service.SpotService;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +53,7 @@ public class SpotController {
         return spotService.findSpotDetail(spotId);
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "59 59 23 * * *")
     @GetMapping("/newFlowers")
     public void spotNewFlowerList() {
         log.info(spotService.updateTodayFlowerSpot());
@@ -67,6 +68,12 @@ public class SpotController {
     public Boolean spotFlowerVisited(HttpServletRequest request, @RequestParam("spot") Long spotId) {
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(request);
         return spotService.findFlowerVisit(sessionUser.getUserId(), spotId);
+    }
+
+    @GetMapping("/flowers/today-visit/lists")
+    public List<SpotUserResponseDTO> spotFlowerVisitedList(HttpServletRequest request) {
+        SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(request);
+        return spotService.findFlowerVisitList(sessionUser.getUserId());
     }
 
     @PostMapping("/flowers")

@@ -2,6 +2,7 @@ package ewha.efub.zeje.service;
 
 import ewha.efub.zeje.domain.*;
 import ewha.efub.zeje.dto.SpotDTO;
+import ewha.efub.zeje.dto.SpotUserResponseDTO;
 import ewha.efub.zeje.util.errors.CustomException;
 import ewha.efub.zeje.util.errors.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -88,6 +90,27 @@ public class SpotService {
         }
 
         return "Successful Update";
+    }
+
+    public List<SpotUserResponseDTO> findFlowerVisitList(Long userId) {
+        List<SpotDTO> spots = findTodayFlowerSpot();
+        List<SpotUserResponseDTO> spotUserList = new ArrayList<>();
+
+        for(SpotDTO spot:spots) {
+            Boolean todayVisit = findFlowerVisit(userId, spot.getSpotId());
+            SpotUserResponseDTO spotUserResponseDTO = SpotUserResponseDTO.builder()
+                    .spotId(spot.getSpotId())
+                    .name(spot.getName())
+                    .location(spot.getLocation())
+                    .mapX(spot.getMapX())
+                    .mapY(spot.getMapY())
+                    .todayVisit(todayVisit)
+                    .build();
+
+            spotUserList.add(spotUserResponseDTO);
+        }
+
+        return spotUserList;
     }
 
     public Boolean findFlowerVisit(Long userId, Long spotId) {
@@ -239,7 +262,7 @@ public class SpotService {
         return typeBuilder.toString();
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "59 59 23 * * *")
     public void runApi() {
         log.info(addSpotApi("A01", "", ""));
         log.info(addSpotApi("A02", "A0202", "A02020700"));

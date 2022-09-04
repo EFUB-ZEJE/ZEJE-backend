@@ -2,15 +2,13 @@ package ewha.efub.zeje.dto;
 
 import com.sun.istack.NotNull;
 import ewha.efub.zeje.domain.Spot;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 
 @Data
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class SpotDTO {
