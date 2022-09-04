@@ -2,6 +2,7 @@ package ewha.efub.zeje.controller;
 
 import ewha.efub.zeje.domain.SpotRepository;
 import ewha.efub.zeje.dto.SpotDTO;
+import ewha.efub.zeje.dto.SpotSearchDTO;
 import ewha.efub.zeje.dto.SpotUserResponseDTO;
 import ewha.efub.zeje.dto.security.SessionUserDTO;
 import ewha.efub.zeje.service.SpotService;
@@ -29,22 +30,22 @@ public class SpotController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping(value="/search/travel")
-    public List<SpotDTO> spotTravelList(){
+    public List<SpotSearchDTO> spotTravelList(){
         return spotService.findAllSpots("여행");
     }
 
     @GetMapping(value="/search/experience")
-    public List<SpotDTO> spotExperienceList(){
+    public List<SpotSearchDTO> spotExperienceList(){
         return spotService.findAllSpots("체험");
     }
 
     @GetMapping(value="/search/travel/{keyword}")
-    public List<SpotDTO> spotSearchTravelList(@PathVariable("keyword") String keyword){
+    public List<SpotSearchDTO> spotSearchTravelList(@PathVariable("keyword") String keyword){
         return spotService.findSpotsByKeyword("여행", keyword);
     }
 
     @GetMapping(value="/search/experience/{keyword}")
-    public List<SpotDTO> spotSearchExperienceList(@PathVariable("keyword") String keyword){
+    public List<SpotSearchDTO> spotSearchExperienceList(@PathVariable("keyword") String keyword){
         return spotService.findSpotsByKeyword("체험", keyword);
     }
 
@@ -82,5 +83,6 @@ public class SpotController {
         Long spotId = body.get("spotId");
         return spotService.updateFlowerVisit(sessionUser.getUserId(), spotId);
     }
+
 }
 

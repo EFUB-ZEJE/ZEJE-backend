@@ -2,6 +2,7 @@ package ewha.efub.zeje.service;
 
 import ewha.efub.zeje.domain.*;
 import ewha.efub.zeje.dto.SpotDTO;
+import ewha.efub.zeje.dto.SpotSearchDTO;
 import ewha.efub.zeje.dto.SpotUserResponseDTO;
 import ewha.efub.zeje.util.errors.CustomException;
 import ewha.efub.zeje.util.errors.ErrorCode;
@@ -42,17 +43,17 @@ public class SpotService {
     private final SpotUserRepository spotUserRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
-    public List<SpotDTO> findAllSpots(String category) {
+    public List<SpotSearchDTO> findAllSpots(String category) {
         return spotRepository.findByCategory(category)
                 .stream()
-                .map(spot -> new SpotDTO(spot))
+                .map(spot -> new SpotSearchDTO(spot))
                 .collect(Collectors.toList());
     }
 
-    public List<SpotDTO> findSpotsByKeyword(String category, String keyword) {
+    public List<SpotSearchDTO> findSpotsByKeyword(String category, String keyword) {
         return spotRepository.findByCategoryAndNameContaining(category, keyword)
                 .stream()
-                .map(spot -> new SpotDTO(spot))
+                .map(spot -> new SpotSearchDTO(spot))
                 .collect(Collectors.toList());
     }
 
@@ -159,8 +160,7 @@ public class SpotService {
 
         String type = selectType(cat1, cat2, cat3);
 
-        String listApiUrl = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=" + serviceKey
-                + "&contentTypeId=12&areaCode=39&sigunguCode=&cat1=" + cat1 + "&cat2=" + cat2 + "&cat3=" + cat3 + "&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=300&pageNo=1";
+        String listApiUrl = "http://apis.data.go.kr/B551011/KorService/areaBasedList?numOfRows=400&pageNo=1&MobileOS=ETC&MobileApp=AppTest&ServiceKey="+serviceKey+"&listYN=Y&arrange=A&contentTypeId=12&areaCode=39&sigunguCode=&cat1="+cat1+"&cat2="+cat2+"&cat3="+cat3;
 
         JSONObject parseItems = readTourApi(listApiUrl);
         JSONArray parseItemList = new JSONArray();
@@ -186,8 +186,7 @@ public class SpotService {
             String name = (String) item.get("title");
             String location = (String) item.get("addr1");
 
-            String detailApiUrl = "http://api.visitkorea.or.kr/openapi/service/rest/KorService/detailCommon?ServiceKey="+ serviceKey + "&contentTypeId=12&contentId="+ contentId
-                    + "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&defaultYN=Y&firstImageYN=Y&areacodeYN=Y&catcodeYN=Y&addrinfoYN=Y&mapinfoYN=Y&overviewYN=Y";
+            String detailApiUrl = "http://apis.data.go.kr/B551011/KorService/detailCommon?ServiceKey="+serviceKey+"&contentTypeId=12&contentId="+contentId+"&MobileOS=ETC&MobileApp=AppTest&defaultYN=Y&firstImageYN=Y&areacodeYN=Y&catcodeYN=Y&addrinfoYN=Y&mapinfoYN=Y&overviewYN=Y";
             JSONObject parseDetailItems = readTourApi(detailApiUrl);
             JSONObject parseDetailItem = (JSONObject) parseDetailItems.get("item");
 
