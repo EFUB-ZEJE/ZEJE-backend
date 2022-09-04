@@ -7,6 +7,7 @@ import ewha.efub.zeje.util.errors.CustomException;
 import ewha.efub.zeje.util.errors.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class ReviewService {
     private final SpotRepository spotRepository;
     private final ImageUploadService imageUploadService;
 
+    @Transactional
     public ReviewResponseDTO addReview(ReviewRequestDTO reviewRequestDTO, MultipartFile imageFile) throws IOException {
         User user = userRepository.findById(reviewRequestDTO.getUserId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -42,6 +44,7 @@ public class ReviewService {
 
     }
 
+    @Transactional
     public Review saveReview(ReviewRequestDTO reviewRequestDTO, String fileUrl, User user, Spot spot) {
         Review review = Review.builder()
                 .content(reviewRequestDTO.getContent())
@@ -54,6 +57,7 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
+    @Transactional
     public Review saveReview(ReviewRequestDTO reviewRequestDTO, User user, Spot spot) {
         Review review = Review.builder()
                 .content(reviewRequestDTO.getContent())
@@ -89,6 +93,7 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public String deleteReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));

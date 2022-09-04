@@ -9,9 +9,6 @@ import ewha.efub.zeje.util.errors.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
-import org.json.JSONTokener;
-import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -41,7 +38,6 @@ public class SpotService {
     private final SpotRepository spotRepository;
     private final UserRepository userRepository;
     private final SpotUserRepository spotUserRepository;
-    private final ModelMapper modelMapper = new ModelMapper();
 
     public List<SpotSearchDTO> findAllSpots(String category) {
         return spotRepository.findByCategory(category)
@@ -60,7 +56,7 @@ public class SpotService {
     public SpotDTO findSpotDetail(Long spotId) {
         Spot spot = spotRepository.findById(spotId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SPOT_NOT_FOUND));
-        SpotDTO spotDTO = modelMapper.map(spot, SpotDTO.class);
+        SpotDTO spotDTO = new SpotDTO(spot);
 
         return spotDTO;
     }
@@ -128,6 +124,7 @@ public class SpotService {
         return spotUserRepository.existsBySpotAndUser(spot, user);
     }
 
+    @Transactional
     public String updateFlowerVisit(Long userId, Long spotId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));

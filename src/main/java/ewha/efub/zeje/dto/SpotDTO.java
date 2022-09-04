@@ -6,7 +6,6 @@ import lombok.*;
 
 import javax.persistence.Column;
 
-@Data
 @Builder
 @Getter
 @NoArgsConstructor

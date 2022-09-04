@@ -4,7 +4,6 @@ import com.sun.istack.NotNull;
 import ewha.efub.zeje.domain.Spot;
 import lombok.*;
 
-@Data
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

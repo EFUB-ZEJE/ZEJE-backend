@@ -2,15 +2,12 @@ package ewha.efub.zeje.dto.diary;
 
 import com.sun.istack.NotNull;
 import ewha.efub.zeje.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class DiaryRequestDTO {
