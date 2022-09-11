@@ -26,10 +26,10 @@ class JwtAuthenticationFilter extends OncePerRequestFilter {
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            log.info("TOKEN: " + String.valueOf(request.getRemoteAddr()));
+            log.info(String.valueOf(request.getRequestURL()));
         }
         else {
-            log.info("NO TOKEN: " + String.valueOf(request.getRemoteAddr()));
+            log.info(String.valueOf(request.getRequestURL()));
         }
         filterChain.doFilter(request, response); // 필터 작동
     }
