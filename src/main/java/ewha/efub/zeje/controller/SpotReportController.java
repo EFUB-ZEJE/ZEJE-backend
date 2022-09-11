@@ -21,11 +21,17 @@ public class SpotReportController {
     public String spotReportSave(@RequestParam(value = "name") String name,
                                  @RequestParam(value = "type") String type,
                                  @RequestParam(value = "image", required = false) MultipartFile image,
-                                 @RequestParam(value = "description", required = false) String description) throws IOException {
+                                 @RequestParam(value = "description", required = false) String description,
+                                 @RequestParam(value = "mapX") String mapX,
+                                 @RequestParam(value = "mapY") String mapY,
+                                 @RequestParam(value = "location") String location) throws IOException {
         SpotReportRequestDTO spotReportRequestDTO = SpotReportRequestDTO.builder()
                 .name(name)
                 .type(type)
                 .description(description)
+                .mapX(mapX)
+                .mapY(mapY)
+                .location(location)
                 .build();
 
         return spotReportService.addSpotReport(spotReportRequestDTO, image);

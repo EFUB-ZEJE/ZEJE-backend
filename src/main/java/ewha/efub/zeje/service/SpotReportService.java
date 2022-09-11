@@ -42,6 +42,9 @@ public class SpotReportService {
                 .type(spotReportRequestDTO.getType())
                 .image(fileUrl)
                 .description(spotReportRequestDTO.getDescription())
+                .mapX(spotReportRequestDTO.getMapX())
+                .mapY(spotReportRequestDTO.getMapY())
+                .location(spotReportRequestDTO.getLocation())
                 .build();
 
         spotReportRepository.save(spotReport);
@@ -54,6 +57,9 @@ public class SpotReportService {
                 .name(spotReportRequestDTO.getName())
                 .type(spotReportRequestDTO.getType())
                 .description(spotReportRequestDTO.getDescription())
+                .mapX(spotReportRequestDTO.getMapX())
+                .mapY(spotReportRequestDTO.getMapY())
+                .location(spotReportRequestDTO.getLocation())
                 .build();
 
         spotReportRepository.save(spotReport);

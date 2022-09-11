@@ -13,6 +13,9 @@ public class SpotReportResponseDTO {
     private String type;
     private String image;
     private String description;
+    private String mapX;
+    private String mapY;
+    private String location;
 
     public SpotReportResponseDTO(SpotReport spotReport) {
         this.spotReportId = spotReport.getSpotReportId();
@@ -20,5 +23,7 @@ public class SpotReportResponseDTO {
         this.type = spotReport.getType();
         this.image = spotReport.getImage();
         this.description = spotReport.getDescription();
+        this.mapX = spotReport.getMapX();
+        this.mapY = spotReport.getMapY();
     }
 }
