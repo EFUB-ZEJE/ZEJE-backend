@@ -37,19 +37,20 @@ import java.net.URL;
 public class SpotService {
     private final SpotRepository spotRepository;
     private final UserRepository userRepository;
+    private final WishRepository wishRepository;
     private final SpotUserRepository spotUserRepository;
 
-    public List<SpotSearchDTO> findAllSpots(String category) {
+    public List<SpotSearchDTO> findAllSpots(Long userId, String category) {
         return spotRepository.findByCategory(category)
                 .stream()
-                .map(spot -> new SpotSearchDTO(spot))
+                .map(spot -> new SpotSearchDTO(spot, wishRepository.existsByUser_UserIdAndSpot_SpotId(userId, spot.getSpotId())))
                 .collect(Collectors.toList());
     }
 
-    public List<SpotSearchDTO> findSpotsByKeyword(String category, String keyword) {
+    public List<SpotSearchDTO> findSpotsByKeyword(Long userId, String category, String keyword) {
         return spotRepository.findByCategoryAndNameContaining(category, keyword)
                 .stream()
-                .map(spot -> new SpotSearchDTO(spot))
+                .map(spot -> new SpotSearchDTO(spot, wishRepository.existsByUser_UserIdAndSpot_SpotId(userId, spot.getSpotId())))
                 .collect(Collectors.toList());
     }
 
