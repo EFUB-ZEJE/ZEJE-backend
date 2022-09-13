@@ -15,6 +15,8 @@ public class ReviewResponseDTO {
     private Long reviewId;
     private Long spotId;
     private Long userId;
+    private String profile;
+    private String nickname;
     private String content;
     private Integer score;
     private LocalDateTime createdDate;
@@ -25,6 +27,8 @@ public class ReviewResponseDTO {
         this.reviewId = review.getReviewId();
         this.spotId = review.getSpot().getSpotId();
         this.userId = review.getUser().getUserId();
+        this.profile = review.getUser().getProfileUrl();
+        this.nickname = review.getUser().getNickname();
         this.content = review.getContent();
         this.score = review.getScore();
         this.createdDate = review.getCreatedDate();
