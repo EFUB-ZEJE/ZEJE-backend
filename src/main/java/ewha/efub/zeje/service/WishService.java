@@ -38,6 +38,7 @@ public class WishService {
                 .spot(spot)
                 .build();
         wishRepository.save(wish);
+        spot.plusWishCount();
 
         return wish.getWishId().toString();
     }
@@ -48,6 +49,13 @@ public class WishService {
                 .orElseThrow(() -> new CustomException(ErrorCode.WISH_NOT_FOUND))
                 .getWishId();
         wishRepository.deleteById(wishId);
+
+        Spot spot = spotRepository.findById(spotId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SPOT_NOT_FOUND));
+
+        if(spot.getWishCount() > 0) {
+            spot.minusWishCount();
+        }
 
         return wishId.toString()+"번 위시리스트 삭제 완료";
     }

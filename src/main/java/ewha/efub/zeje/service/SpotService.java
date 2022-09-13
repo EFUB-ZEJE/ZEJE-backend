@@ -14,10 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.json.JSONObject;
@@ -40,18 +37,32 @@ public class SpotService {
     private final WishRepository wishRepository;
     private final SpotUserRepository spotUserRepository;
 
-    public List<SpotSearchDTO> findAllSpots(Long userId, String category) {
-        return spotRepository.findByCategory(category)
+    public List<SpotSearchDTO> findAllSpots(Long userId, String category, String order) {
+        List<SpotSearchDTO> spotSearchDTOList = spotRepository.findByCategory(category)
                 .stream()
                 .map(spot -> new SpotSearchDTO(spot, wishRepository.existsByUser_UserIdAndSpot_SpotId(userId, spot.getSpotId())))
+                .sorted(Comparator.comparing(order.equals("인기")? SpotSearchDTO::getWishCount : SpotSearchDTO::getSpotId))
                 .collect(Collectors.toList());
+
+        if(order.equals("최신")){
+            Collections.reverse(spotSearchDTOList);
+        }
+
+        return spotSearchDTOList;
     }
 
-    public List<SpotSearchDTO> findSpotsByKeyword(Long userId, String category, String keyword) {
-        return spotRepository.findByCategoryAndNameContaining(category, keyword)
+    public List<SpotSearchDTO> findSpotsByKeyword(Long userId, String category, String order, String keyword) {
+        List<SpotSearchDTO> spotSearchDTOList = spotRepository.findByCategoryAndNameContaining(category, keyword)
                 .stream()
                 .map(spot -> new SpotSearchDTO(spot, wishRepository.existsByUser_UserIdAndSpot_SpotId(userId, spot.getSpotId())))
+                .sorted(Comparator.comparing(order.equals("인기")? SpotSearchDTO::getWishCount : SpotSearchDTO::getSpotId))
                 .collect(Collectors.toList());
+
+        if(order.equals("최신")){
+            Collections.reverse(spotSearchDTOList);
+        }
+
+        return spotSearchDTOList;
     }
 
     public SpotDTO findSpotDetail(Long spotId) {
