@@ -44,7 +44,7 @@ public class SpotService {
                 .sorted(Comparator.comparing(order.equals("인기")? SpotSearchDTO::getWishCount : SpotSearchDTO::getSpotId))
                 .collect(Collectors.toList());
 
-        if(order.equals("최신")){
+        if(!order.equals("과거")){
             Collections.reverse(spotSearchDTOList);
         }
 
@@ -58,7 +58,7 @@ public class SpotService {
                 .sorted(Comparator.comparing(order.equals("인기")? SpotSearchDTO::getWishCount : SpotSearchDTO::getSpotId))
                 .collect(Collectors.toList());
 
-        if(order.equals("최신")){
+        if(!order.equals("과거")){
             Collections.reverse(spotSearchDTOList);
         }
 
