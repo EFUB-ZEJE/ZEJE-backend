@@ -29,24 +29,28 @@ public class SpotController {
     private final SpotService spotService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping(value="/search/travel")
-    public List<SpotSearchDTO> spotTravelList(){
-        return spotService.findAllSpots("여행");
+    @GetMapping(value="/search/travel/{order}")
+    public List<SpotSearchDTO> spotTravelList(HttpServletRequest request, @PathVariable("order") String order){
+        SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(request);
+        return spotService.findAllSpots(sessionUser.getUserId(), "여행", order);
     }
 
-    @GetMapping(value="/search/experience")
-    public List<SpotSearchDTO> spotExperienceList(){
-        return spotService.findAllSpots("체험");
+    @GetMapping(value="/search/experience/{order}")
+    public List<SpotSearchDTO> spotExperienceList(HttpServletRequest request, @PathVariable("order") String order){
+        SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(request);
+        return spotService.findAllSpots(sessionUser.getUserId(), "체험", order);
     }
 
-    @GetMapping(value="/search/travel/{keyword}")
-    public List<SpotSearchDTO> spotSearchTravelList(@PathVariable("keyword") String keyword){
-        return spotService.findSpotsByKeyword("여행", keyword);
+    @GetMapping(value="/search/travel/{order}/{keyword}")
+    public List<SpotSearchDTO> spotSearchTravelList(HttpServletRequest request, @PathVariable("order") String order, @PathVariable("keyword") String keyword){
+        SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(request);
+        return spotService.findSpotsByKeyword(sessionUser.getUserId(), "여행", order, keyword);
     }
 
-    @GetMapping(value="/search/experience/{keyword}")
-    public List<SpotSearchDTO> spotSearchExperienceList(@PathVariable("keyword") String keyword){
-        return spotService.findSpotsByKeyword("체험", keyword);
+    @GetMapping(value="/search/experience/{order}/{keyword}")
+    public List<SpotSearchDTO> spotSearchExperienceList(HttpServletRequest request, @PathVariable("order") String order, @PathVariable("keyword") String keyword){
+        SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(request);
+        return spotService.findSpotsByKeyword(sessionUser.getUserId(), "체험", order, keyword);
     }
 
     @GetMapping(value="/details/{spotId}")

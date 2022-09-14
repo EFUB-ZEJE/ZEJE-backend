@@ -54,8 +54,12 @@ public class Spot {
     @Column
     private Boolean flower;
 
+    @NotNull
+    @Column
+    private Long wishCount;
+
     @Builder
-    public Spot(Long contentId, String category, String type, String name, String location, String description, String link, String mapX, String mapY, String image) {
+    public Spot(Long contentId, String category, String type, String name, String location, String description, String link, String mapX, String mapY, String image, Long wishCount) {
         this.contentId = contentId;
         this.category = category;
         this.type = type;
@@ -67,6 +71,7 @@ public class Spot {
         this.mapY = mapY;
         this.image = image;
         this.flower = false;
+        this.wishCount = wishCount;
     }
 
     public void updateFlowerSpot() {
@@ -76,6 +81,10 @@ public class Spot {
     public void deleteFlowerSpot() {
         this.flower = false;
     }
+
+    public void plusWishCount() { this.wishCount++; }
+
+    public void minusWishCount() { this.wishCount--; }
 }
 
 
