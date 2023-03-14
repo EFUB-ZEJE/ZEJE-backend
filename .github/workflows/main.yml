@@ -77,7 +77,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
         aws deploy create-deployment \
-        --application-name zeje \
+        --application-name zeje-deploy \
         --deployment-group-name zeje-group \
         --file-exists-behavior OVERWRITE \
         --s3-location bucket=zeje-bucket,bundleType=zip,key=zeje.zip \
