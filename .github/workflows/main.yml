@@ -82,3 +82,4 @@ jobs:
         --file-exists-behavior OVERWRITE \
         --s3-location bucket=zeje-bucket,bundleType=zip,key=zeje.zip \
         --region ap-northeast-2
+        
