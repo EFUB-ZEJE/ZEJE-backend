@@ -15,5 +15,5 @@ else
 fi
 
 cd $REPOSITORY
-sudo docker build -t -api-spring-boot-docker .
-sudo docker run -d -p 8080:8080 -api-spring-boot-docker
+sudo docker build --tag zeje-docker .
+sudo docker run -d -p 8080:8080 zeje-docker
