@@ -21,7 +21,7 @@ public class Memory extends TimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memoryId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_id")
     private Diary diary;
 
