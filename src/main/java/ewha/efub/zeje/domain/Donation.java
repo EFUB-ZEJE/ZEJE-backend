@@ -18,7 +18,7 @@ public class Donation extends TimeEntity {
     private Long donationId;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     private User user;
 
