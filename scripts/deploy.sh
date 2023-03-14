@@ -15,5 +15,5 @@ else
 fi
 
 cd $REPOSITORY
-sudo docker build --tag zeje-docker .
-sudo docker run -d -p 8080:8080 zeje-docker
+sudo docker build --tag zeje .
+sudo docker run -d -p 8080:8080 zeje
