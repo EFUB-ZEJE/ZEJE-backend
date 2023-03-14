@@ -1,5 +1,6 @@
 package ewha.efub.zeje.controller;
 
+import ewha.efub.zeje.config.annotation.LogExecutionTime;
 import ewha.efub.zeje.domain.SpotRepository;
 import ewha.efub.zeje.dto.SpotDTO;
 import ewha.efub.zeje.dto.SpotSearchDTO;
@@ -86,6 +87,12 @@ public class SpotController {
         SessionUserDTO sessionUser = jwtTokenProvider.getUserInfoByToken(request);
         Long spotId = body.get("spotId");
         return spotService.updateFlowerVisit(sessionUser.getUserId(), spotId);
+    }
+
+    @GetMapping("/testTime")
+    @LogExecutionTime
+    public void spotInformationUpdateTest() {
+        spotService.runApi();
     }
 
 }
