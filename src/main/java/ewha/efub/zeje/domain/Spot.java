@@ -59,7 +59,7 @@ public class Spot {
     private Long wishCount;
 
     @Builder
-    public Spot(Long contentId, String category, String type, String name, String location, String description, String link, String mapX, String mapY, String image, Long wishCount) {
+    public Spot(Long contentId, String category, String type, String name, String location, String description, String link, String mapX, String mapY, String image) {
         this.contentId = contentId;
         this.category = category;
         this.type = type;
@@ -71,7 +71,7 @@ public class Spot {
         this.mapY = mapY;
         this.image = image;
         this.flower = false;
-        this.wishCount = wishCount;
+        this.wishCount = 0L;
     }
 
     public void updateFlowerSpot() {
