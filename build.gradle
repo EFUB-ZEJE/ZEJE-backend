@@ -39,6 +39,8 @@ dependencies {
 	implementation 'org.modelmapper:modelmapper:2.4.2'
     implementation 'org.jetbrains:annotations:20.1.0'
 
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+
     runtimeOnly 'mysql:mysql-connector-java'
 
 	annotationProcessor 'org.projectlombok:lombok'

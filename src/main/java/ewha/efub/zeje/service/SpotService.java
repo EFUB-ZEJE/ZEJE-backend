@@ -173,49 +173,52 @@ public class SpotService {
 
         JSONObject parseItems = readTourApi(listApiUrl);
         JSONArray parseItemList = new JSONArray();
-        if(parseItems.get("item") instanceof JSONObject) {
-            JSONObject item = parseItems.getJSONObject("item");
-            parseItemList.put(item);
-        }
-        else if (parseItems.get("item") instanceof JSONArray) {
-            parseItemList = parseItems.getJSONArray("item");
-        }
+        String message = null;
 
-        int notSaved = 0;
-        for(int i=0;i<parseItemList.length();i++) {
-            JSONObject item = (JSONObject) parseItemList.get(i);
-
-            Long contentId = Long.parseLong(String.valueOf(item.get("contentid")));
-            if(spotRepository.findByContentId(contentId).isPresent()) {
-                notSaved++;
-                continue;
+        if(parseItems!=null) {
+            if (parseItems.get("item") instanceof JSONObject) {
+                JSONObject item = parseItems.getJSONObject("item");
+                parseItemList.put(item);
+            } else if (parseItems.get("item") instanceof JSONArray) {
+                parseItemList = parseItems.getJSONArray("item");
             }
 
-            String category = cat2.equals("A0203")? "체험" : "여행";
-            String name = (String) item.get("title");
-            String location = (String) item.get("addr1");
 
-            String detailApiUrl = "http://apis.data.go.kr/B551011/KorService/detailCommon?ServiceKey="+serviceKey+"&contentTypeId=12&contentId="+contentId+"&MobileOS=ETC&MobileApp=AppTest&defaultYN=Y&firstImageYN=Y&areacodeYN=Y&catcodeYN=Y&addrinfoYN=Y&mapinfoYN=Y&overviewYN=Y";
-            JSONObject parseDetailItems = readTourApi(detailApiUrl);
-            JSONObject parseDetailItem = (JSONObject) parseDetailItems.get("item");
+            int notSaved = 0;
+            for (int i = 0; i < parseItemList.length(); i++) {
+                JSONObject item = (JSONObject) parseItemList.get(i);
 
-            String description = parseDetailItem.has("overview")? (String) parseDetailItem.get("overview") : null;
-            String link = parseDetailItem.has("homepage")? (String) parseDetailItem.get("homepage") : null;
+                Long contentId = Long.parseLong(String.valueOf(item.get("contentid")));
+                if (spotRepository.findByContentId(contentId).isPresent()) {
+                    notSaved++;
+                    continue;
+                }
 
-            String mapX = parseDetailItem.has("mapx")? String.valueOf(parseDetailItem.get("mapx")) : null;
-            String mapY = parseDetailItem.has("mapy")? String.valueOf(parseDetailItem.get("mapy")) : null;
+                String category = cat2.equals("A0203") ? "체험" : "여행";
+                String name = (String) item.get("title");
+                String location = (String) item.get("addr1");
 
-            String image = parseDetailItem.has("firstimage")? String.valueOf(parseDetailItem.get("firstimage")) : null;
+                String detailApiUrl = "http://apis.data.go.kr/B551011/KorService/detailCommon?ServiceKey=" + serviceKey + "&contentTypeId=12&contentId=" + contentId + "&MobileOS=ETC&MobileApp=AppTest&defaultYN=Y&firstImageYN=Y&areacodeYN=Y&catcodeYN=Y&addrinfoYN=Y&mapinfoYN=Y&overviewYN=Y";
+                JSONObject parseDetailItems = readTourApi(detailApiUrl);
+                JSONObject parseDetailItem = (JSONObject) parseDetailItems.get("item");
 
-            SpotDTO spotDTO = new SpotDTO(contentId, category, type, name, location, description, link, mapX, mapY, image);
-            Spot spot = spotDTO.toEntity();
-            spotRepository.save(spot);
+                String description = parseDetailItem.has("overview") ? (String) parseDetailItem.get("overview") : null;
+                String link = parseDetailItem.has("homepage") ? (String) parseDetailItem.get("homepage") : null;
+
+                String mapX = parseDetailItem.has("mapx") ? String.valueOf(parseDetailItem.get("mapx")) : null;
+                String mapY = parseDetailItem.has("mapy") ? String.valueOf(parseDetailItem.get("mapy")) : null;
+
+                String image = parseDetailItem.has("firstimage") ? String.valueOf(parseDetailItem.get("firstimage")) : null;
+
+                SpotDTO spotDTO = new SpotDTO(contentId, category, type, name, location, description, link, mapX, mapY, image);
+                Spot spot = spotDTO.toEntity();
+                spotRepository.save(spot);
+            }
+
+            Integer count = parseItemList.length() - notSaved;
+            message = count + " Saved";
+
         }
-
-        Integer count = parseItemList.length() - notSaved;
-        String message = count + " Saved";
-
-
         return message;
     }
 
@@ -239,9 +242,11 @@ public class SpotService {
 
             JSONObject parseResponse = (JSONObject) jsonObject.get("response");
             JSONObject parseBody = (JSONObject) parseResponse.get("body");
-
-            parseItems = (JSONObject) parseBody.get("items");
-
+            
+            Object objectItem = parseBody.get("items");
+            if(!objectItem.equals("")) {
+                parseItems = (JSONObject) parseBody.get("items");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

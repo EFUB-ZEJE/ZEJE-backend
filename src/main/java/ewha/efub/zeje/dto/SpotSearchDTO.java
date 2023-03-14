@@ -77,7 +77,6 @@ public class SpotSearchDTO {
                 .mapX(mapX)
                 .mapY(mapY)
                 .image(image)
-                .wishCount(wishCount)
                 .build();
     }
 }

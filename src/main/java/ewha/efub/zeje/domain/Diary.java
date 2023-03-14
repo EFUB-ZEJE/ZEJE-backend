@@ -22,7 +22,7 @@ public class Diary extends TimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long diaryId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -37,7 +37,7 @@ public class Diary extends TimeEntity {
     @LastModifiedDate
     private LocalDateTime updatedDate;
 
-    @OneToMany(mappedBy = "diary", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Memory> memories = new ArrayList<>();
 
     @Builder
