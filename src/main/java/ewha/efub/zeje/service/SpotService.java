@@ -275,7 +275,7 @@ public class SpotService {
         return typeBuilder.toString();
     }
 
-    @Scheduled(cron = "59 59 23 * * *")
+//    @Scheduled(cron = "59 59 23 * * *")
     public void runApi() {
         log.info(addSpotApi("A01", "", ""));
         log.info(addSpotApi("A02", "A0202", "A02020700"));
