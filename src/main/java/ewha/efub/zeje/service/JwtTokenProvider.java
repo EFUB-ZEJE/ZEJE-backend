@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +23,9 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
     private final UserRepository userRepository;
-    private String secretKey = "CakerBakery1886!";
+
+    @Value("${jwt.secretKey}")
+    private String secretKey;
 
     private final long ACCESS_TOKEN_VALID_TIME = 3 * 60 * 60 * 1000L; //3시간
     //private final long REFRESH_TOKEN_VALID_TIME = 60 * 60 * 24 * 7 * 1000L;
