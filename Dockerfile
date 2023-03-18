@@ -1,6 +1,6 @@
 FROM openjdk:11-jdk
 
-WORKDIR /usr/src/app
+WORKDIR /home/ubuntu/app
 
 ARG JAR_FILE=/*.jar
 COPY ${JAR_FILE} myapp.jar
