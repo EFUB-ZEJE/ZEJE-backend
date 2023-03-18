@@ -17,4 +17,4 @@ fi
 
 cd $REPOSITORY
 docker build -t makar0726/zeje .
-docker run -d -p 8080:8080 --name makar0726/zeje
+docker run -d -p 80:8080 --name makar0726/zeje
