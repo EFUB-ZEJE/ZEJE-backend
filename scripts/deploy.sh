@@ -1,5 +1,7 @@
 #!/bin/bash
 
+REPOSITORY=/home/ubuntu/app
+
 echo "> 현재 실행 중인 Docker 컨테이너 pid 확인"
 CURRENT_PID=$(sudo docker container ls -q)
 
@@ -13,5 +15,6 @@ else
   sleep 5
 fi
 
-cd /home/ubuntu/app && docker build -t zeje .
-docker run --name zeje -d -e active=prod -p 8080:8080 zeje
+cd $REPOSITORY
+docker build -t makar0726/zeje .
+docker run -d -p 8080:8080 --name makar0726/zeje
