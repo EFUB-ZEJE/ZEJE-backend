@@ -15,5 +15,6 @@ else
   sleep 5
 fi
 
-cd /home/ubuntu/app && docker build -t zeje .
-docker run --name zeje -d -e active=prod -p 8080:8080 zeje
+cd $REPOSITORY
+docker build -t makar0726/zeje .
+docker run -d -p 8080:8080 --name makar0726/zeje
