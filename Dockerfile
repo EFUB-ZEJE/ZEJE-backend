@@ -1,8 +1,6 @@
 FROM openjdk:11-jdk
 
-WORKDIR /home/ubuntu/app
-
-ARG JAR_FILE=/*.jar
+ARG JAR_FILE=/home/ubuntu/app/*.jar
 COPY ${JAR_FILE} myapp.jar
 
 EXPOSE 8080
