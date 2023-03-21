@@ -34,7 +34,7 @@ public class SecurityConfig{
 
                 .authorizeRequests(authorize -> authorize
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                        .antMatchers("**/oauth2/**", "/users/login", "/", "/css/**","/images/**","/js/**","/profile", "/spots/testTime").permitAll()
+                        .antMatchers("**/oauth2/**", "/users/login", "/", "/css/**","/images/**","/js/**","/profile").permitAll()
                         .anyRequest().authenticated() // 나머지들은, 로그인한 사람들만
                 );
 

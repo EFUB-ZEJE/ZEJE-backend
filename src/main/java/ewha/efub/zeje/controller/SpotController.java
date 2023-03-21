@@ -1,5 +1,6 @@
 package ewha.efub.zeje.controller;
 
+import ewha.efub.zeje.config.BatchScheduler;
 import ewha.efub.zeje.config.annotation.LogExecutionTime;
 import ewha.efub.zeje.domain.SpotRepository;
 import ewha.efub.zeje.dto.SpotDTO;
@@ -29,6 +30,7 @@ import java.util.Map;
 public class SpotController {
     private final SpotService spotService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final BatchScheduler batchScheduler;
 
     @GetMapping(value="/search/travel/{order}")
     public List<SpotSearchDTO> spotTravelList(HttpServletRequest request, @PathVariable("order") String order){
@@ -88,12 +90,19 @@ public class SpotController {
         Long spotId = body.get("spotId");
         return spotService.updateFlowerVisit(sessionUser.getUserId(), spotId);
     }
-
-    @GetMapping("/testTime")
-    @LogExecutionTime
-    public void spotInformationUpdateTest() {
-        spotService.runApi();
-    }
+//
+//    @GetMapping("/testTime")
+//    @LogExecutionTime
+//    public void spotInformationUpdateTest() {
+//        //spotService.runApi();
+//        batchScheduler.runJob();
+//    }
+//
+//    @GetMapping("/testOriginTime")
+//    @LogExecutionTime
+//    public void spotInformationUpdateTestWithoutBatch() {
+//        spotService.runApi();
+//    }
 
 }
 
