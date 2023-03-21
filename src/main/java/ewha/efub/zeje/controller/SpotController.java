@@ -90,13 +90,19 @@ public class SpotController {
         Long spotId = body.get("spotId");
         return spotService.updateFlowerVisit(sessionUser.getUserId(), spotId);
     }
-
-    @GetMapping("/testTime")
-    @LogExecutionTime
-    public void spotInformationUpdateTest() {
-        //spotService.runApi();
-        batchScheduler.runJob();
-    }
+//
+//    @GetMapping("/testTime")
+//    @LogExecutionTime
+//    public void spotInformationUpdateTest() {
+//        //spotService.runApi();
+//        batchScheduler.runJob();
+//    }
+//
+//    @GetMapping("/testOriginTime")
+//    @LogExecutionTime
+//    public void spotInformationUpdateTestWithoutBatch() {
+//        spotService.runApi();
+//    }
 
 }
 
